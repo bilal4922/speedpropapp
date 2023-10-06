@@ -136,14 +136,18 @@ export const fetchData = (receivedData) => async (dispatch) => {
   // : `http://desa.celex.com.my/chat/submit?destination=${receivedData.message}&days=${receivedData.days}&theme=${receivedData.theme}`;
   try {
     console.log("eeeeeee")
-    const url =
-      receivedData.theme === 0
+    const isNumberString = /^([0-9]|1[0-2])$/.test(receivedData.id);
 
-      
-      ? `https://halaltravel.ai/gpt/submit?destination=${receivedData.message}&days=${receivedData.days}`
-      : `https://halaltravel.ai/gpt/submit?destination=${receivedData.message}&days=${receivedData.days}`;;
+    // Construct the API URL based on the condition.
+    const apiUrl = isNumberString
+      ? `https://halaltravel.ai/hu/api/chatgpt/user/itinerary/${receivedData.id}`
+      : `https://halaltravel.ai/gpt/submit?destination=${receivedData.message}&days=${receivedData.days}`;
    
-       const response = await fetch(url);
+console.log('apiUrl', apiUrl);
+
+// https://halaltravel.ai/gpt/submit?destination=${receivedData.message}&days=${receivedData.days
+
+       const response = await fetch(apiUrl);
 
     if (!response.ok) {
       throw new Error(`Error: ${response.statusText}`);
@@ -202,8 +206,19 @@ export const fetchData = (receivedData) => async (dispatch) => {
 
 const data = await response.json();
 
-let data2= JSON.parse(data.result)
-let data22= JSON.parse(data.result)
+let data2, data22;
+
+// Conditionally parse the JSON string based on isNumberString
+if (isNumberString) {
+  
+  data2 = data.result;
+  data22 = data.result;
+} else {
+  data2 = JSON.parse(data.result);
+  data22 = JSON.parse(data.result);
+  
+}
+
 let data3= data.location
 //myArray3 = Object.entries(data3);
 

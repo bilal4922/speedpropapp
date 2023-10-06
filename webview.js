@@ -1,9 +1,9 @@
 
 
 
-
+import 'react-native-get-random-values';
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator ,SafeAreaView,StatusBar} from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator ,SafeAreaView,StatusBar,Alert } from 'react-native';
 import { WebView } from 'react-native-webview';
 import CustomHeader from './CustomHeaderback';
 const WebViewScreen = ({ navigation,route }) => {
@@ -11,8 +11,7 @@ const WebViewScreen = ({ navigation,route }) => {
     navigation.setOptions({
       headerShown: false, // Hide the header for this screen
     });}, [navigation]);
-   // https://online.ktmb.com.my
-   // https://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fflights
+  
    const { urlmain } = route.params;
  // const { webUrl } = route.params; // Get the webUrl from the route parameters
   const [isLoading, setIsLoading] = useState(true);
@@ -39,8 +38,28 @@ const WebViewScreen = ({ navigation,route }) => {
       <WebView
         source={{ uri: urlmain }}
         style={styles.webView}
+        androidHardwareAccelerationDisabled={true}
         javaScriptEnabled={true} // Enable JavaScript if needed
-        onLoad={handleWebViewLoad} // Attach the onLoad event handler
+        onLoad={handleWebViewLoad}
+        onError={(error) => {
+          console.error("WebView Error: ", error);
+          Alert.alert(
+            "WebView Error",
+          error,
+            [{ text: "OK" }],
+            { cancelable: false }
+          );
+        }}
+      
+      
+      
+      
+      
+      
+        
+       
+
+        // Attach the onLoad event handler
       />
     </View>
     </SafeAreaView>
@@ -58,6 +77,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   webView: {
+    opacity: 0.99,overflow: 'hidden' ,
     flex: 1,
   },
 });

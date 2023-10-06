@@ -15,7 +15,9 @@
 		7699B88040F8A987B510C191 /* libPods-AwesomeProject222-AwesomeProject222Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-AwesomeProject222-AwesomeProject222Tests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		CE167DB12ABBD31E00D07467 /* visitmalaysia26-2@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = CE167DB02ABBD31E00D07467 /* visitmalaysia26-2@3x.png */; };
+		CE4B53B42ACA8E64003826CB /* Screenshot 2023-10-02 at 1.36.02 PM.png in Resources */ = {isa = PBXBuildFile; fileRef = CE4B53B32ACA8E64003826CB /* Screenshot 2023-10-02 at 1.36.02 PM.png */; };
 		CEB097132ABA76D8007907F2 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = CEB097122ABA76D8007907F2 /* Fonts */; };
+		CEB9FFA12AC853550089F15C /* GoolgeService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CEB9FFA02AC853550089F15C /* GoolgeService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,8 +48,10 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = AwesomeProject222/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-AwesomeProject222-AwesomeProject222Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AwesomeProject222-AwesomeProject222Tests.release.xcconfig"; path = "Target Support Files/Pods-AwesomeProject222-AwesomeProject222Tests/Pods-AwesomeProject222-AwesomeProject222Tests.release.xcconfig"; sourceTree = "<group>"; };
 		CE167DB02ABBD31E00D07467 /* visitmalaysia26-2@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "visitmalaysia26-2@3x.png"; sourceTree = "<group>"; };
+		CE4B53B32ACA8E64003826CB /* Screenshot 2023-10-02 at 1.36.02 PM.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Screenshot 2023-10-02 at 1.36.02 PM.png"; sourceTree = "<group>"; };
 		CEB097122ABA76D8007907F2 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
 		CEB097152ABA7F7C007907F2 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
+		CEB9FFA02AC853550089F15C /* GoolgeService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoolgeService-Info.plist"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -121,6 +125,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				CEB9FFA02AC853550089F15C /* GoolgeService-Info.plist */,
+				CE4B53B32ACA8E64003826CB /* Screenshot 2023-10-02 at 1.36.02 PM.png */,
 				CE167DB02ABBD31E00D07467 /* visitmalaysia26-2@3x.png */,
 				CEB097152ABA7F7C007907F2 /* FontAwesome.ttf */,
 				CEB097142ABA7C64007907F2 /* New Group */,
@@ -259,8 +265,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				CEB9FFA12AC853550089F15C /* GoolgeService-Info.plist in Resources */,
 				CE167DB12ABBD31E00D07467 /* visitmalaysia26-2@3x.png in Resources */,
 				CEB097132ABA76D8007907F2 /* Fonts in Resources */,
+				CE4B53B42ACA8E64003826CB /* Screenshot 2023-10-02 at 1.36.02 PM.png in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -517,7 +525,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.visit.Epic.Travel;
 				PRODUCT_NAME = "Epic Travel";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -544,7 +552,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.visit.Epic.Travel;
 				PRODUCT_NAME = "Epic Travel";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

@@ -18,11 +18,39 @@ import {
   FontSize,
   FontFamily,
 } from "./GlobalStylessignin";
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
+import { StatusBar } from 'react-native'; // Import StatusBar
+
 
 const SignInPageV2 = ({ navigation }) => {
+
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false, // Hide the header for this screen
+    });
+  }, [navigation]);
+
+  // Hide the status bar as well
+  StatusBar.setHidden(true);
   const [email, setEmail] = React.useState("enmhg1990@gmail.com");
   const [password, setPassword] = React.useState("12345");
   const [isLoading, setIsLoading] = React.useState(false);
+
+
+
+  const handleFacebookLogin = () => {
+    // Add your Facebook login logic here
+  };
+
+  // Function to handle Google login
+  const handleGoogleLogin = () => {
+    // Add your Google login logic here
+  };
 
   const handleSignIn = () => {
 
@@ -87,6 +115,41 @@ const SignInPageV2 = ({ navigation }) => {
       });
   };
 
+
+  GoogleSignin.configure({
+    // Your OAuth 2.0 client ID
+    iosClientId: '467967159674-38rnssv0nmqtsf7g8h5g9ok1thdn9pr9.apps.googleusercontent.com',
+  });
+
+
+
+  const signIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log('User Info:', userInfo);
+
+      // Extract email and name from userInfo
+      const { email, name } = userInfo.user;
+      console.log('Email:', email);
+      console.log('Name:', name);
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // User cancelled the sign-in process
+        console.log('Sign-In Cancelled');
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // Sign-in is in progress already
+        console.log('Sign-In in Progress');
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // Play Services are not available
+        console.log('Play Services Not Available');
+      } else {
+        // Some other error occurred
+        console.error('Error:', error.message);
+      }
+    }
+  }
+
   // Use navigation.setOptions to hide the header
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -94,33 +157,8 @@ const SignInPageV2 = ({ navigation }) => {
     });
   }, [navigation]);
 
-
-//   useEffect(() => {
-//     // Make the API call when the component mounts
-//    axios.interceptors.request.use(
-//   (config) => {
-//     // Log the request before sending
-//     console.log('Request:', config);
-
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
-
-// // Make the API call
-// axios.get('https://halaltravel.ai/ht/api/blog/blogDetails/1')
-//   .then((response) => {
-//     // Handle the successful response
-//     console.log('Response data:', response.data);
-//   })
-//   .catch((error) => {
-//     // Handle any errors
-//     console.error('Error fetching data:', error);
-//   });
-//   }, []);
   
+
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -227,6 +265,98 @@ const SignInPageV2 = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
+        <View style={[styles.signInPageV2, styles.frameFlexBox2]}>
+        {/* ... other components */}
+        
+        {/* Facebook Login Button */}
+       <View>
+       <TouchableOpacity
+  onPress={handleGoogleLogin}
+
+ style={[
+      styles.emailWrapperg,
+      styles.emailWrapperShadowBox,
+      {
+        backgroundColor: Color.colorMidnightblue_100,
+        borderRadius: Border.br_3xs,
+        width: "90%",
+        marginTop: 10,
+        marginLeft: 20,
+        alignItems: "center",
+        justifyContent: "center",
+      },
+    
+  ]}
+>
+  {isLoading ? (
+    <ActivityIndicator color="#FFFFFF" />
+  ) : (
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <Icon name="facebook" size={24} color="#FFFFFF" />
+      <Text
+        style={[
+          styles.email,
+          styles.emailTypo,
+          {
+            color: "#FFFFFF",
+            textAlign: "center",
+            fontWeight: 'bold',
+            marginLeft: 10, // Adjust the spacing between the icon and text
+          },
+        ]}
+      >
+        Sign in with Facebook
+      </Text>
+    </View>
+  )}
+</TouchableOpacity>
+       <TouchableOpacity
+  onPress={signIn}
+
+ style={[
+      styles.emailWrapperg,
+      styles.emailWrapperShadowBox,
+      {
+        backgroundColor: '#fff',
+        borderRadius: Border.br_3xs,
+        width: "90%",
+        marginTop: 10,
+        marginLeft: 20,
+        alignItems: "center",
+        justifyContent: "center",
+      },
+    
+  ]}
+>
+  {isLoading ? (
+    <ActivityIndicator color="#FFFFFF" />
+  ) : (
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <Icon name="google" size={24} color="#192579" />
+      <Text
+        style={[
+          styles.email,
+          styles.emailTypo,
+          {
+            color: "gray",
+            textAlign: "center",
+            fontWeight: 'bold',
+            marginLeft: 10, // Adjust the spacing between the icon and text
+          },
+        ]}
+      >
+        Sign in with Google
+      </Text>
+    </View>
+  )}
+</TouchableOpacity>
+
+        
+      
+       </View>
+        
+      </View>
+
         <View
           style={[
             styles.container,
@@ -350,6 +480,12 @@ const styles = StyleSheet.create({
    
   },
   emailWrapper: {
+    height: 41,
+    paddingVertical: 0,
+    justifyContent: "center",
+  },
+
+  emailWrapperg: {
     height: 41,
     paddingVertical: 0,
     justifyContent: "center",

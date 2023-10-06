@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ActivityIndicator, Image, Linking ,FlatList,TouchableOpacity,SafeAreaView,StatusBar, Alert} from 'react-native';
+import { View, Text, ActivityIndicator, Image, Linking ,FlatList,TouchableOpacity,SafeAreaView,StatusBar, Alert,Modal ,TextInput} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchData } from './redux/actions';
 import { GiPathDistance, GiKnifeFork, GiBed } from 'react-icons/gi';
@@ -7,9 +7,17 @@ import { BsSun, BsAirplane, BsTrainFreightFront } from 'react-icons/bs';
 import { IoPartlySunnyOutline } from 'react-icons/io5';
 import { BiBus, BiMoon } from 'react-icons/bi';
 import CustomHeader from './CustomHeaderback';
+import {
+  Padding,
+  Color,
+  Border,
+  FontSize,
+  FontFamily,
+} from "./GlobalStylessignin";
 
 //import { Icon } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon2 from 'react-native-vector-icons/FontAwesome';
 //import { Icon } from '@rneui/themed'
 
 const DIYOverviewPage = ({ navigation ,route}) => {
@@ -47,6 +55,18 @@ const DIYOverviewPage = ({ navigation ,route}) => {
     console.log('Search button pressed');
   };
 
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  // Function to open the modal
+  const openModal = () => {
+    setModalVisible(true);
+   // Alert.alert(`Modal)...`);
+  };
+
+  // Function to close the modal
+  const closeModal = () => {
+    setModalVisible(false);
+  };
  
   function findThumbnailURLIndex2(data3, title) {
     for (let i = 0; i < data3.length; i++) {
@@ -60,12 +80,13 @@ const DIYOverviewPage = ({ navigation ,route}) => {
 
   const { address,
     day,
-    date } = route.params;
+    date,id } = route.params;
   const receivedData = {
     theme: 2,
     message: address,
     days: day,
     date: date,
+    id:id
   };
 
   useEffect(() => {
@@ -80,6 +101,7 @@ const DIYOverviewPage = ({ navigation ,route}) => {
       message: address,
       days: day,
       date: date,
+      id:id
     };
 
     try {
@@ -93,6 +115,7 @@ const DIYOverviewPage = ({ navigation ,route}) => {
     }
   };
 
+  const [email, setEmail] = React.useState("");
   const renderThumbnail = (place) => {
     const thumbnailIndex = findThumbnailURLIndex1(data3, place);
 
@@ -145,8 +168,37 @@ const DIYOverviewPage = ({ navigation ,route}) => {
       <StatusBar barStyle="dark-content" backgroundColor="white" />
 
       <CustomHeader navigation={navigation} />
+      <View
+  style={{
+    
+    height:60 ,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    paddingRight: 10, // Adjust the right padding as needed
+    paddingTop: 10, // Adjust the top padding as needed
+  }}
+>
+  <TouchableOpacity
+    style={{
+      borderColor: '#192579',
+      borderWidth: 1,
+      borderRadius: 10,
+      padding: 10,
+    }}
+    onPress={() => openModal()} // You can use openModal directly here
+  >
+    <Text style={{ fontWeight: 'bold', fontSize: 16 }}>
+      Save Plan
+    </Text>
+  </TouchableOpacity>
+</View>
+
 
     <View style={styles.container}>
+
+  
+    
     
       {loading ? (
         <View>
@@ -197,7 +249,12 @@ const DIYOverviewPage = ({ navigation ,route}) => {
     const urlmain = 'https://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fflights';
     handleNavigate(urlmain);
   }} name="airplanemode-active" color="#202756" size={30} style={styles.icon} />
-          <Icon name="train"
+
+<Icon2  onPress={() => {
+    const urlmain = 'https://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fcars';
+    handleNavigate(urlmain);
+  }} name="car" color="#202756" size={25} style={styles.icon} />
+          <Icon name="directions-train"
           
           onPress={() => {
             const urlmain = 'https://online.ktmb.com.my';
@@ -257,7 +314,7 @@ const DIYOverviewPage = ({ navigation ,route}) => {
                 <Icon  name="local-restaurant" color="#202756" size={30} style={{marginLeft:10,marginRight:10}} />
              
 
-                <Text style={styles.activityText}>Lunch</Text>
+                {/* <Text style={styles.activityText}>lunch ideas</Text> */}
                 <View style={styles.iconContainer}>
                 
                 <Text style={{ fontWeight: '300', fontSize: 17 ,marginTop:5 }}>
@@ -274,9 +331,12 @@ onPress={() => {
       //     )
       //   }
        >
-        <Text style={{ textDecorationLine: 'underline', color: '#202756', fontSize: 17 }}>
+        <Text style={[styles.activityText, { textDecorationLine: 'underline' }]}>Lunch ideas</Text>
+
+        {/* <Text style={{ textDecorationLine: 'underline', color: '#202756', fontSize: 17 }}>
           {item.lunch}
         </Text>
+        <Text style={styles.activityText}>lunch ideas</Text> */}
       </TouchableOpacity>
       </Text>
         
@@ -327,7 +387,7 @@ onPress={() => {
                 <Icon  name="local-restaurant" color="#202756" size={30} style={{marginLeft:10,marginRight:10}} />
              
 
-                <Text style={styles.activityText}>Dinner</Text>
+                {/* <Text style={styles.activityText}>Dinner</Text> */}
                 <View style={styles.iconContainer}>
                 
                 <Text style={{ fontWeight: '300', fontSize: 17, marginTop:5 }}>
@@ -335,8 +395,9 @@ onPress={() => {
 
 
 onPress={() => {
-  const urlmain = `http://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fhotels`;
-  handleNavigate(urlmain);
+  
+  const urlmain = `https://www.viator.com/searchResults/all?pid=P00094549&mcid=42383&medium=link&text=${item.dinner}, ${receivedData.message}`;
+            // handleNavigate(urlmain);
 }}
         // onPress={() =>
         //   Linking.openURL(
@@ -344,9 +405,11 @@ onPress={() => {
         //   )
         // }
       >
-        <Text style={{ textDecorationLine: 'underline', color: '#202756', fontSize: 17 }}>
+                <Text style={[styles.activityText, { textDecorationLine: 'underline' }]}>Dinner ideas</Text>
+
+        {/* <Text style={{ textDecorationLine: 'underline', color: '#202756', fontSize: 17 }}>
           {item.dinner}
-        </Text>
+        </Text> */}
       </TouchableOpacity>
       </Text>
         
@@ -402,8 +465,10 @@ onPress={() => {
                 <Text style={{ fontWeight: '300', fontSize: 14 ,marginTop:5 }}>
       <TouchableOpacity
            onPress={() => {
-            const urlmain = `https://www.viator.com/searchResults/all?pid=P00094549&mcid=42383&medium=link&text=${item.lunch}, ${receivedData.message}`;
+            const urlmain = `http://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fhotels/${receivedData.message}?sort=distance_a`;
             handleNavigate(urlmain);
+            // const urlmain = `https://www.viator.com/searchResults/all?pid=P00094549&mcid=42383&medium=link&text=${item.lunch}, ${receivedData.message}`;
+            // handleNavigate(urlmain);
           }}
         // onPress={() =>
         //   Linking.openURL(
@@ -429,6 +494,62 @@ onPress={() => {
         />
       )}
 
+<Modal
+  animationType="slide"
+  transparent={true}
+  visible={isModalVisible}
+>
+  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', borderColor: '#ffb116', borderWidth: 1 }}>
+    <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10, width: '80%' ,borderColor: '#ffb116', borderWidth: 1}}>
+      <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 20, textAlign:'center' }}>
+        Save Plan
+      </Text>
+      <TextInput
+              placeholder="Plan Name"
+              placeholderTextColor={"#202756"}
+               style={[styles.email, styles.emailTypo , {  height: 20 }] }
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+            ></TextInput>
+     
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <TouchableOpacity
+          onPress={closeModal}
+          style={{
+            backgroundColor: Color.colorOrange,
+                borderRadius: Border.br_3xs,
+            padding: 10,
+           
+            width: '45%',
+            alignItems: 'center',
+          }}
+        >
+          <Text style={{ color: 'white', fontWeight: 'bold' }}>Cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+           onPress={() => {
+            closeModal()
+            Alert.alert('you have successfully saved')
+            
+          }}
+
+          style={{
+            backgroundColor: Color.colorOrange,
+                borderRadius: Border.br_3xs,
+            padding: 10,
+            
+            width: '45%',
+            alignItems: 'center',
+          }}
+        >
+          <Text style={{ color: 'white', fontWeight: 'bold' }}>Save</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  </View>
+</Modal>
+
+
 
     </View>
 
@@ -439,6 +560,7 @@ onPress={() => {
 const styles = {
   container: {
     flex: 1,
+  
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -512,6 +634,15 @@ const styles = {
     fontWeight: '450',
     marginLeft:10,
   
+  },
+  email: {
+    fontFamily: FontFamily.montserratRegular,
+    color: '#202756',
+   marginBottom: 10,
+    height: Platform.OS === 'ios' ? { height: 20 } : {height: 0}
+
+  
+   
   },
 };
 

@@ -54,103 +54,59 @@ const isEmailValid = (email) => {
   return emailPattern.test(email);
 };
 
-  const handleSignIn = () => {
+const handleSignIn = () => {
+  if (!email) {
+    Alert.alert("Error", "Please enter your email.");
+    return;
+  }
 
+  if (!isEmailValid(email)) {
+    Alert.alert("Error", "Please enter a valid email address.");
+    return;
+  }
 
-    if (!email) {
-      Alert.alert("Error", "Please enter your email.");
-      return;
-    }
+  if (!password) {
+    Alert.alert("Error", "Please enter your password.");
+    return;
+  }
 
-    if (!isEmailValid(email)) {
-      Alert.alert("Error", "Please enter a valid email address.");
-      return;
-    }
-  
-    // Rest of your code...
-  
-  
-  
-  
-  
-  
-  
-    // Check if the password field is empty
-    if (!password) {
-      Alert.alert("Error", "Please enter your password.");
-      return;
-    }
-  
-    // Check if the FullName field is empty
-    if (!FullName) {
-      Alert.alert("Error", "Please enter your full name.");
-      return;
-    }
-  
-    // Check if the selectedDate is a valid date
-    if (!selectedDate || isNaN(selectedDate.getTime())) {
-      Alert.alert("Error", "Please select a valid date of birth.");
-      return;
-    }
-  
-    // Check if the phoneNumber field is empty
-    if (!phoneNumber) {
-      Alert.alert("Error", "Please enter your phone number.");
-      return;
-    }
-  
-    // Check if the country field is empty
-    if (!country) {
-      Alert.alert("Error", "Please select your country.");
-      return;
-    }
-    setIsLoading(true);
+  if (!FullName) {
+    Alert.alert("Error", "Please enter your full name.");
+    return;
+  }
 
-    //const phoneNumber = '+9233666227713'; // Example phone number
+  if (!selectedDate || isNaN(selectedDate.getTime())) {
+    Alert.alert("Error", "Please select a valid date of birth.");
+    return;
+  }
 
-// Use regular expressions to extract the country code
-// const countryCodeMatch = phoneNumber.match(/^\+(\d+)/);
+  if (!phoneNumber) {
+    Alert.alert("Error", "Please enter your phone number.");
+    return;
+  }
 
-// if (countryCodeMatch) {
-//   const countryCode = countryCodeMatch[1];
-//   console.log('Country Code:', countryCode);
-// } else {
-  // console.log('Country Code', phoneRef.current?.getCurrentCountryCode());
+  if (!country) {
+    Alert.alert("Error", "Please select your country.");
+    return;
+  }
 
-  // console.log('Country Code', country);
+  setIsLoading(true);
+  console.log('Loading', '+' + country, phoneNumber.replace(new RegExp('\\+' + country, 'g'), ''));
 
-
-
-    console.log("User Information:", {
-      firstName: FullName,
-      lastName: FullName,
-      email: email,
-      password: password,
-      phoneNumber: {
-        countryCode: '+'+country,
-        phoneNumber: phoneNumber,
-      },
-      dtOfBirth: "1990-01-01", // You can replace this with selectedDate if needed
-      gender: selectedGender === 0 ? "male" : "female",
-    });
-    
-    // Make an API request
-    axios.post(
+  axios
+    .post(
       "https://halaltravel.ai/ht/api/auth/signup",
       {
-        
-
-      firstName: FullName,
+        firstName: FullName,
         lastName: FullName,
         email: email,
         password: password,
         phoneNumber: {
-          countryCode: "+60",
-          phoneNumber: "1137373737"
+          countryCode: '+' + country,
+          phoneNumber: phoneNumber.replace(new RegExp('\\+' + country, 'g'), ''),
         },
-        dtOfBirth: "1990-01-01",
-        gender: "male"
-    
+        dtOfBirth: selectedDate.toISOString().split('T')[0], // Format selectedDate as "YYYY-MM-DD"
+        gender: selectedGender === 0 ? "male" : "female",
       },
       {
         headers: {
@@ -158,33 +114,35 @@ const isEmailValid = (email) => {
         },
       }
     )
+    .then((response) => {
+      setIsLoading(false);
+      console.error("APpppp", response.status);
 
-      .then((response) => {
-        setIsLoading(false);
-        console.error("APpppp", response);
-        navigation.navigate("Home");
-        // Check the response for success (adjust as per your API response structure)
-       // if (response.data.message == 'User account has been created successfully') {
-          if (response) {
-          // userId exists in the response data
-         // console.log("User ID:", response.data.userId);
-    
-          // Navigate to the detail screen upon success
-       //   navigation.goBack();
-        //  Alert.alert( response);
-        } else {
-          // Display an error message
-        //  Alert.alert( "an error occurred while signUp",response);
-        }
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        
+      if (response.status === 201) {
+        Alert.alert( response.data.message);
+
+        navigation.navigate("signin");
+      } else if (response.status === 400) {
+        Alert.alert("Request failed with status code:", response.data.message);
+      } else {
+        Alert.alert("Request failed with status code:", response.status.toString());
+      }
+    })
+    .catch((error) => {
+      setIsLoading(false);
+
+      if (error.response) {
         // Handle API request error
+        console.error("API Error:", error.response.data);
+        Alert.alert("Error", "An error occurred while signing up: " + error.response.data.message);
+      } else {
+        // Handle other errors
         console.error("API Error:", error);
-        Alert.alert("Error", "An error occurred while signUp",error);
-      });
-  };
+        Alert.alert("Error", "An error occurred while signing up.");
+      }
+    });
+};
+
 
   // Use navigation.setOptions to hide the header
   React.useLayoutEffect(() => {

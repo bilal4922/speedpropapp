@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StatusBar, StyleSheet, Image, TextInput, TouchableOpacity,Platform ,FlatList} from 'react-native';
+import 'react-native-get-random-values';
+
+import { View, Text, StatusBar, StyleSheet, Image, TextInput, TouchableOpacity,Platform ,FlatList, Alert} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomHeader from './CustomHeader';
 import  Icon  from 'react-native-vector-icons/MaterialIcons';
@@ -7,9 +9,10 @@ import  Icon  from 'react-native-vector-icons/MaterialIcons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import StarRating from 'react-native-star-rating'; // Import the star rating component
 
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 import { FontSize, Padding, Color, Border, FontFamily } from "./GlobalStyles";
-
+import Icon2 from 'react-native-vector-icons/FontAwesome';
 
 import DateTimePicker from '@react-native-community/datetimepicker'; // Import DateTimePicker for date selection
 import { ScrollView } from 'react-native-gesture-handler';
@@ -30,120 +33,208 @@ const HomeScreen = ({ navigation }) => {
 
   const datam = [
     {
+      id: '1',
+      name: 'Malacca Food Trip',
+      rating: 3.4,
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/06/74/97/83.jpg',
+      subheading: 'Experience cooking local cuisine.'
+    },
+    {
+      id: '2',
+      name: 'Buffet at KL Tower',
+      rating: 4,
+      imageUrl: 'https://media-cdn.tripadvisor.com/media/photo-s/14/b2/99/e9/atmosphere360-revolving.jpg',
+      subheading: 'Experience buffet with a great view.'
+    },
+    {
       id: '3',
-      name: 'Rock Climbing',
-      rating: 4.0,
-      imageUrl: 'https://media.istockphoto.com/id/518208206/photo/extreme-winter-climbing.jpg?s=612x612&w=is&k=20&c=c4ha07hehjfgOD4m3BGihsJuY4__PwstomMKVjRcOjM=',
-      subheading: 'Conquer challenging cliffs.'
+      name: 'Heritaeg Food Hunting',
+      rating: 4,
+      imageUrl: 'https://images.squarespace-cdn.com/content/v1/52edcfd2e4b01873108351ab/1559650248131-Q1EGEA9NGM2IJ82FVRRZ/HOP+Lunch+Hop+Penang+George+Town+Food+Tour+1?format=1500w',
+      subheading: 'Experience fantastic food from Penang.'
     },
     {
       id: '4',
-      name: 'Rafting',
-      rating: 4.7,
-      imageUrl: 'https://media.istockphoto.com/id/139701505/photo/river-rafting.jpg?s=1024x1024&w=is&k=20&c=xSw62LPfjV6KgDfVk4S9hnAD69CuayvH6yT1YCVA6FA=',
-      subheading: 'Navigate thrilling rapids.'
-    },
-    {
-      id: '5',
-      name: 'Camping',
-      rating: 4.4,
-      imageUrl: 'https://media.istockphoto.com/id/1377841262/photo/the-beautiful-scenery-of-a-tent-in-a-pine-tree-forest-at-pang-oung-mae-hong-son-province.jpg?s=612x612&w=is&k=20&c=tN4n99cnqAAVzepKxeV4_UyuWJa9BaF542EdppPLaXs=',
-      subheading: 'Camp under the stars.'
-    },
-    {
-      id: '6',
-      name: 'Mountain Climbing',
+      name: 'Private Hands-on Cooking',
       rating: 4.6,
-      imageUrl: 'https://media.istockphoto.com/id/518208206/photo/extreme-winter-climbing.jpg?s=612x612&w=is&k=20&c=c4ha07hehjfgOD4m3BGihsJuY4__PwstomMKVjRcOjM=',
-      subheading: 'Conquer majestic peaks.'
+      imageUrl: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/07/5e/7e/90.jpg',
+      subheading: 'Experience cooking local cuisine.'
     },
-    {
-      id: '7',
-      name: 'Museum Visit',
-      rating: 4.8,
-      imageUrl: 'https://media.istockphoto.com/id/538358346/photo/pupils-and-teacher-on-school-field-trip-to-museum.jpg?s=612x612&w=is&k=20&c=UCps5JSN7GdLbuJXl2OCAO8K6XWbok2_Hu9jd8DxcOw=',
-      subheading: 'Explore art and history.'
-    },
+   
   ];
 
   const datao = [
     {
-      id: '1',
-      name: 'Hiking',
-      rating: 4.5,
-      imageUrl: 'https://media.istockphoto.com/id/1141196125/photo/hiking-in-the-allgaeu-alps.jpg?s=1024x1024&w=is&k=20&c=9nqFcswWHHv8s4vWTCXf_Axp1a_V-epy-wuvEqL_-7k=',
-      subheading: 'Explore scenic trails.'
-    },
-    {
       id: '2',
-      name: 'Cycling',
-      rating: 4.2,
-      imageUrl: 'https://media.istockphoto.com/id/1402134774/photo/professional-road-cyclist-on-a-training-ride.jpg?s=1024x1024&w=is&k=20&c=_09YNPNzheMtTEJ0E9I68N06q_-E6vZwvQyHlz9qi8k=',
-      subheading: 'Ride through beautiful landscapes.'
-    },
-    {
-      id: '3',
-      name: 'Rock Climbing',
+      name: "Kuala Lumpur's Legacy",
       rating: 4.0,
-      imageUrl: 'https://media.istockphoto.com/id/1141196125/photo/hiking-in-the-allgaeu-alps.jpg?s=1024x1024&w=is&k=20&c=9nqFcswWHHv8s4vWTCXf_Axp1a_V-epy-wuvEqL_-7k=',
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/10/5e/52/3a.jpg',
+      subheading: 'Explore Kuala Lumpur s vibrant history with outdoor activities at ionic monuments and educational visits to various museums.',
+	// type of attraction: ["Outdoor Activities", "Monuments", "Museums"]
+	interest: ["Fruit Valley", "Rainforest", "House of Celebrities/VVIPs"]
 
-      subheading: 'Conquer challenging cliffs.'
     },
-    {
+{
       id: '4',
-      name: 'Rafting',
-      rating: 4.7,
-      imageUrl: 'https://media.istockphoto.com/id/1402134774/photo/professional-road-cyclist-on-a-training-ride.jpg?s=1024x1024&w=is&k=20&c=_09YNPNzheMtTEJ0E9I68N06q_-E6vZwvQyHlz9qi8k=',
-      subheading: 'Navigate thrilling rapids.'
+      name: 'Aqua Escapeds in KL',
+      rating: 4.0,
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0a/38/b7/2c.jpg',
+      subheading: 'Dive into water activities at KL s esteemed parks - from peaceful boat rides to refreshing dips in large, sparkling pools.',
+	// type of attraction: ["Water Activities", "Parks"]
+	interest: ["Rivers", "Water Park", "Forest Park"]
+
     },
-    {
+{
       id: '5',
-      name: 'Camping',
-      rating: 4.4,
-      imageUrl: 'https://media.istockphoto.com/id/187775551/photo/group-of-friends-having-a-campfire-id187775551',
-      subheading: 'Camp under the stars.'
+      name: 'Serene Spaces in KL',
+      rating: 4.0,
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/09/91/90/65.jpg',
+      subheading: 'Discover the tranquility of KL s lush parks and the spiritual calm at revered worship sites for a moment of peace.',
+	// type of attraction: ["Worship Places", "Parks"]
+	interest: ["Theme Park", "Nature Park", "Forest Park"]
+
     },
+{
+      id: '6',
+      name: 'Heritage & Harmony in KL',
+      rating: 4.0,
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/34/bf/c6.jpg',
+      subheading: 'Visit historic monuments, intriguing museums and sacred worship places to understand the cultural facric of Kuala Lumpur',
+	// type of attraction: ["Monuments & Museums", "Worship Places"]
+	interest: ["Galleries", "Memorial", "Palace"]
+
+    },
+{
+      id: '7',
+      name: 'Active explorations on KL',
+      rating: 4.0,
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/2d/2f/c9.jpg',
+      subheading: 'Indulge in exhilarating outdoor activities while discovering KL s unique place of interest.',
+	// type of attraction: ["Outdoor Activities", "Place of Interest"]
+	interest: ["Food Outlet", "Shopping", "Hop On Hop Off", "Walking Tour", "Gardens"]
+
+    },
+{
+      id: '8',
+      name: 'Past & Present in Green',
+      rating: 4.0,
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/df/b9/01.jpg',
+      subheading: 'Immerse yourself in a day of knowledge and nature as you visit KL s monuments, museums, and beautiful parks.',
+	// type of attraction: ["Monuments", "Museums", "Parks"]
+	interest: ["Central Marks", "Eco Park Palace", "Memorial", "Theme Park"]
+
+    },
+{
+      id: '9',
+      name: "KL's Sea and Sightseeing",
+      rating: 4.0,
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/e6/5f/d5.jpg',
+      subheading: 'Experience KL s exciting water activities and visit city s popular attractions to create lasting memories.',
+	// type of attraction: ["Water Activities", "Place of Interest"]
+	interest: ["Diving Beach", "Zoo", "Aquaria", "Science Centre"]
+
+    },
+{
+      id: '10',
+      name: "KL's Active Aqua Adventure",
+      rating: 4.0,
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/07/a3/48/84.jpg',
+      subheading: 'Experience the best of both worlds with Kuala Lumpur s outdoor and water activities, a perfect blend of adventure and fun.',
+	// type of attraction: ["Outdoor Activities", "Water Activities"],
+	interest: ["Rainforest", "Island", "Waterfall", "Diving"]
+
+    },
+{
+      id: '11',
+      name: 'Outdoor Oasis of KL',
+      rating: 4.0,
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/07/04/da/44.jpg',
+      subheading: 'Unwind amidst nature with engaging outdoor activities in the city s most loved parks.',
+	// type of attraction: ["Outdoor Activities", "Parks"]
+	interest: ["Hills", "Recreational Forest", "Nature Park", "Water Park"]
+
+    },
+{
+      id: '12',
+      name:  "sKL's Green & Vibrant Visits",
+      rating: 4.0,
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/07/04/da/44.jpg',
+      subheading: 'Enjoy a day out at KL s parks and explore city s notable places of interest, all in one itinerary.',
+	// type of attraction: ["Place of Interest", "Parks"]
+	interest: ["Water Park", "Wetland Park", "Railway Station", "Health Places like SPAs", "Entertainment Places like Pub/Club/Cafes"]
+
+    },
+
+
+    // {
+    //   id: '1',
+    //   name: 'Private Tour Kuala Lumpur',
+    //   rating: 4.0,
+    //   imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/09/dd/1b/4d.jpg',
+    //   subheading: 'Get a bird s-eye view over Kuala Lumpur.'
+    // },
+    // {
+    //   id: '2',
+    //   name: 'Private Cameron Tour',
+    //   rating: 4,
+    //   imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/37/3d/ac.jpg',
+    //   subheading: 'Enjoy the flexibility of independent travel.'
+    // },
+    // {
+    //   id: '3',
+    //   name: 'Waterfall at Batu Caves',
+    //   rating: 4,
+    //   imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/07/7e/e9/71.jpg',
+    //   subheading: 'Have a refreshing splash.'
+    // },
+    // {
+    //   id: '4',
+    //   name: 'Glowing Kuala Selangor',
+    //   rating: 4.6,
+    //   imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0a/58/19/9f.jpg',
+    //   subheading: 'Experience the natural  phenomenon.'
+    // },
+   
   ];
   
   
-  
+  const handleNavigate = (urlmain) => {
+    // Your navigation logic here
+    navigation.navigate('web', { urlmain }); // Pass the urlmain parameter to the 'web' screen
+    console.log('Search button pressed');
+  };
   const dataw = [
     {
       id: '1',
-      name: 'Scuba Diving',
-      rating: 4.5,
-      imageUrl: 'https://media.istockphoto.com/id/498283106/photo/underwater-scuba-diver-explore-and-enjoy-coral-reef-sea-life.jpg?s=612x612&w=is&k=20&c=tb9rWKLOVLEICinkijQ5NUmJv0lvxSq2CCvWgibbg0s=',
-      subheading: 'Explore the underwater world.'
+      name: 'Guided Rock Climbing',
+      rating: 3.4,
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/07/3a/55/03.jpg',
+      subheading: 'Climb the rocks of Batu Caves.'
     },
     {
       id: '2',
-      name: 'Kayaking',
-      rating: 4.2,
-      imageUrl: 'https://media.istockphoto.com/id/1070181118/photo/whitewater-kayaking-extreme-kayaking-a-guy-in-a-kayak-sails-on-a-mountain-river.jpg?s=1024x1024&w=is&k=20&c=AnVNa494Y_vRwlNEnDW4fJxbi6oq0XqATZpMoyD-jl0=',
-      subheading: 'Paddle through scenic waterways.'
+      name: 'Train Trip to Dabong',
+      rating: 4,
+      imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/90/KTM_class_61.jpg',
+      subheading: 'Hop on a train to venture Dabong.'
     },
     {
       id: '3',
-      name: 'Snorkeling',
-      rating: 4.0,
-      imageUrl: 'https://media.istockphoto.com/id/498283106/photo/underwater-scuba-diver-explore-and-enjoy-coral-reef-sea-life.jpg?s=612x612&w=is&k=20&c=tb9rWKLOVLEICinkijQ5NUmJv0lvxSq2CCvWgibbg0s=',
-      subheading: 'Discover vibrant marine life.'
+      name: 'Guided Snorkeling Trip',
+      rating: 4,
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/07/7e/e9/71.jpg',
+      subheading: 'Discover Sabah s sea safely.'
     },
     {
       id: '4',
-      name: 'Jet Skiing',
-      rating: 4.7,
-      imageUrl: 'https://media.istockphoto.com/id/498283106/photo/underwater-scuba-diver-explore-and-enjoy-coral-reef-sea-life.jpg?s=612x612&w=is&k=20&c=tb9rWKLOVLEICinkijQ5NUmJv0lvxSq2CCvWgibbg0s=',
-      subheading: 'Feel the thrill on the waves.'
+      name: 'Scuba Diving',
+      rating: 4.6,
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/07/8f/a8/8c.jpg',
+      subheading: 'Explore the sea with guidance.'
     },
-    {
-      id: '5',
-      name: 'Sailing',
-      rating: 4.4,
-      imageUrl: 'https://media.istockphoto.com/id/498283106/photo/underwater-scuba-diver-explore-and-enjoy-coral-reef-sea-life.jpg?s=612x612&w=is&k=20&c=tb9rWKLOVLEICinkijQ5NUmJv0lvxSq2CCvWgibbg0s=',
-      subheading: 'Sail along picturesque coasts.'
-    },
+   
   ];
+
 
   const [inputValue, setInputValue] = useState('');
 
@@ -246,13 +337,30 @@ const handleConfirm = (date) => {
       address: inputValue,
       day: selectedThemedays1,
       date: selectedDate,
+id:'ffff'
+
 
     });
     console.log('Search button pressed');
   };
+  const handleItemClick = (item) => {
+ //   Alert.alert(item.name)
+    // Perform your action when an item is clicked
+  
+    navigation.navigate('Details', {
+     address: 'kuala lumpur',
+     day: selectedThemedays1,
+     date: selectedDate,
+     id:item.id
 
+   });
+    // You can do any other action you want here
+  };
 
   const renderItem = ({ item }) => (
+    
+    <TouchableOpacity onPress={() => handleItemClick(item)}>
+
     <View style={styles.item}>
       <Image source={{ uri: item.imageUrl }} style={styles.image} />
       <Text style={styles.name}>{item.name}</Text>
@@ -269,6 +377,7 @@ const handleConfirm = (date) => {
           />
           </View>
     </View>
+    </TouchableOpacity>
   );
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -288,7 +397,81 @@ const handleConfirm = (date) => {
 
 
         <View style={styles.dialog}>
+       
       <View style={styles.searchbar}>
+      <View style={styles.containerr}>
+  <View style={styles.transportContainer}>
+    <View style={[styles.transportItem, { alignItems: 'center' }]}>
+      <TouchableOpacity
+        onPress={() => {
+          const urlmain = 'http://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fhotels';
+          handleNavigate(urlmain);
+        }}
+        style={{ alignItems: 'center' }}
+      >
+        <Icon name="bed" color="#202756" size={25} style={{ marginRight: 4 }} />
+        <Text style={[styles.activityText, { textAlign: 'center' }]} >Hotel</Text>
+      </TouchableOpacity>
+    </View>
+
+    <View style={[styles.transportItem, { alignItems: 'center', justifyContent: 'center' }]}>
+  <TouchableOpacity
+    onPress={() => {
+      const urlmain = 'https://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fflights';
+      handleNavigate(urlmain);
+    }}
+    style={{ alignItems: 'center' }} // Add this line to center contents
+  >
+    <Icon name="airplanemode-active" color="#202756" size={25} style={styles.icon} />
+    <Text style={[styles.activityText, { textAlign: 'center' }]}>Flight</Text>
+  </TouchableOpacity>
+</View>
+
+    <View style={[styles.transportItem, { alignItems: 'center' }]}>
+      <TouchableOpacity
+        onPress={() => {
+          const urlmain = 'https://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fcars';
+          handleNavigate(urlmain);
+        }}
+        style={{ alignItems: 'center' }}
+      >
+        <Icon2 name="car" color="#202756" size={25} style={styles.icon} />
+        <Text style={[styles.activityText, { textAlign: 'center' }]} >Car</Text>
+      </TouchableOpacity>
+    </View>
+
+    <View style={[styles.transportItem, { alignItems: 'center' }]}>
+      <TouchableOpacity
+        onPress={() => {
+          const urlmain = 'https://online.ktmb.com.my';
+          handleNavigate(urlmain);
+        }}
+        style={{ alignItems: 'center' }}
+      >
+        <Icon name="directions-train" color="#202756" size={25} style={styles.icon} />
+        <Text style={[styles.activityText, { textAlign: 'center' }]} >Train</Text>
+      </TouchableOpacity>
+    </View>
+
+    <View style={[styles.transportItem, { alignItems: 'center' }]}>
+      <TouchableOpacity
+        onPress={() => {
+          const urlmain = 'https://gohub.com.my';
+          handleNavigate(urlmain);
+
+        }}
+        style={{ alignItems: 'center' }}
+      >
+        <Icon name="directions-bus" color="#202756" size={25} style={styles.icon} />
+        <Text style={[styles.activityText, { textAlign: 'center' }]} >Bus</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+</View>
+
+
+
+
         <View style={styles.frame}>
           <View style={[styles.destinationinput, styles.frame1FlexBox]}>
             <Image
@@ -296,14 +479,21 @@ const handleConfirm = (date) => {
               resizeMode="cover"
               source={require("./assets/vector1.png")}
             />
-            <TextInput 
-             textAlign="left"
-             placeholder="Key in your destination"
-             placeholderTextColor="#999"
-             value={inputValue} // Set the value of the TextInput
-             onChangeText={handleInputChange}
-             style={[styles.keyInYour, styles.dayTypo, { flex: 1,marginLeft:10 }]}>
-            </TextInput>
+           
+
+       
+           
+           <TextInput 
+  textAlign="left"
+  placeholder="Key in your destinationn"
+  placeholderTextColor="#999"
+  value={inputValue}
+  onChangeText={handleInputChange}
+  style={[styles.keyInYour, styles.dayTypo, { flex: 1, marginLeft: 10, height: 20 }]}
+/>
+            
+       
+      
           </View>
           <View style={[styles.frame1, styles.frame1FlexBox]}>
             <View style={[styles.datepicker, styles.frame1FlexBox]}>
@@ -372,7 +562,7 @@ const handleConfirm = (date) => {
         )}
         </View>
         <View style={styles.frame3}>
-           <TouchableOpacity style={[styles.themedropdown, styles.noofdaysShadowBox]} onPress={toggleDropdown}>
+            {/* <TouchableOpacity style={[styles.themedropdown, styles.noofdaysShadowBox]} onPress={toggleDropdown}>
         <View style={[styles.frame4, styles.frameFlexBox]}>
           <Image
             style={styles.faSolidumbrellaBeachIcon}
@@ -386,9 +576,9 @@ const handleConfirm = (date) => {
           resizeMode="cover"
           source={require("./assets/iconamoonarrowup2light.png")}
         />
-      </TouchableOpacity>
-      
-      {isDropdownOpen && (
+      </TouchableOpacity>  */}
+     
+      {/* {isDropdownOpen && (
           <View style={styles.dropdown}>
             {themes.map((theme, index) => (
               <TouchableOpacity key={index} onPress={() => selectTheme(theme)}>
@@ -396,7 +586,7 @@ const handleConfirm = (date) => {
               </TouchableOpacity>
             ))}
           </View>
-        )}
+        )}  */}
           <View style={styles.searchbutton}>
             <Text   onPress={handleNavigate689} style={[styles.search, styles.dayTypo]}>SEARCH</Text>
           </View>
@@ -415,7 +605,7 @@ const handleConfirm = (date) => {
   <Text style={{ color: '#102694' }}>Inspirational Ideas Co-Created by Fellow Travelers and Professionals</Text>
 </Text>
 
-<Text style={styles.headingttile}>Outdoor Activities</Text>
+<Text style={styles.headingttile}>Featured</Text>
 
 <FlatList
       data={datao}
@@ -423,14 +613,14 @@ const handleConfirm = (date) => {
       keyExtractor={(item) => item.id}
       horizontal={true} // Set horizontal to true
     />
-      <Text style={styles.headingttile}>Water Activities</Text>
+      <Text style={styles.headingttile}>Adventures and Sports</Text>
       <FlatList
       data={dataw}
       renderItem={renderItem}
       keyExtractor={(item) => item.id}
       horizontal={true} // Set horizontal to true
     />
-      <Text style={styles.headingttile}> Monuments and Museums</Text>
+      <Text style={styles.headingttile}>Food Discovery</Text>
       <FlatList
       data={datam}
       renderItem={renderItem}
@@ -448,6 +638,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: 'white',
+  },
+  containerr: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: 'white',
+    justifyContent:'center',
   },
   inputContainer: {
     flexDirection: 'row', // Place components horizontally
@@ -598,7 +794,7 @@ const styles = StyleSheet.create({
   datepicker: {
     paddingHorizontal: Padding.p_mini,
     paddingVertical: Padding.p_2xs,
-    width: '45%',
+    width: '55%',
     borderWidth: 0.4,
     borderColor: Color.colorLightsteelblue,
     shadowColor: "rgba(0, 0, 0, 0.05)",
@@ -624,7 +820,7 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.montserratRegular,
     letterSpacing: -0.2,
     textAlign: "left",
-    fontSize: FontSize.size_sm,
+    fontSize: 12,
   },
   frame2: {
     width: 72,
@@ -638,7 +834,7 @@ const styles = StyleSheet.create({
   },
   noofdays: {
     paddingLeft: Padding.p_mid,
-    width: '45%',
+    width: '42%',
   },
   frame1: {
     marginTop: 14,
@@ -682,6 +878,7 @@ const styles = StyleSheet.create({
   searchbutton: {
     backgroundColor: Color.colorOrange,
     height: 34,
+    alignSelf:'center',
     justifyContent: "center",
     marginTop: 16,
     width: 181,
@@ -805,7 +1002,36 @@ const styles = StyleSheet.create({
   ratingContainer: {
     width: 100, // Limit the width of the StarRating component
   },
+  transportContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom:10,
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    marginLeft: 10,
+  },
+
+  activityText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#202756',
+  },
+  activityDetailContainer: {
+    flex: 1,
+  
+    // This will make the container take up the available space
+  },
+  transportContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  transportItem: {
+    flex: 1, // Ensure equal width for each item
+  },
 
 });
 
 export default HomeScreen;
+
