@@ -136,7 +136,8 @@ export const fetchData = (receivedData) => async (dispatch) => {
   // : `http://desa.celex.com.my/chat/submit?destination=${receivedData.message}&days=${receivedData.days}&theme=${receivedData.theme}`;
   try {
     console.log("eeeeeee")
-    const isNumberString = /^([0-9]|1[0-2])$/.test(receivedData.id);
+    const isNumberString = /^\d+$/.test(receivedData.id);
+
 
     // Construct the API URL based on the condition.
     const apiUrl = isNumberString
@@ -262,7 +263,7 @@ var x1= 0;
 
       
 
-        if(Array.isArray(data3) && data3.length > 0){
+        if(Array.isArray(data2) && data2.length > 0){
           myArray.push({
 
          
@@ -320,7 +321,7 @@ var x1= 0;
 
         }
         if(index == 0){
-          const currentDate = receivedData.date;
+          const currentDate = new Date()
           const year = currentDate.getFullYear().toString();
           const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
           const day = currentDate.getDate().toString().padStart(2, '0');
@@ -449,7 +450,7 @@ var x1= 0;
         }
         else{
     
-          const currentDate = receivedData.date;
+          const currentDate = new Date()
           currentDate.setDate(currentDate.getDate() + 1);
           const year = currentDate.getFullYear().toString();
           const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');

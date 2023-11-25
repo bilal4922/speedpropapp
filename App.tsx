@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import DetailsScreen from './DetailsScreen';
 import web from './webview';
+import web1 from './webview1';
 import signin from './signin';
 import signup from './signup';
 
@@ -22,6 +23,7 @@ const App = () => {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Details" component={DetailsScreen} />
         <Stack.Screen name="web" component={web} />
+        <Stack.Screen name="web1" component={web1} />
         <Stack.Screen name="signin" component={signin} />
         <Stack.Screen name="signup" component={signup} />
       </Stack.Navigator>

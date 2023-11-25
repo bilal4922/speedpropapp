@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect } from 'react';
 import 'react-native-get-random-values';
 
 import { View, Text, StatusBar, StyleSheet, Image, TextInput, TouchableOpacity,Platform ,FlatList, Alert} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomHeader from './CustomHeader';
 import  Icon  from 'react-native-vector-icons/MaterialIcons';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchData } from './redux/actions';
 
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import StarRating from 'react-native-star-rating'; // Import the star rating component
@@ -27,212 +29,258 @@ const HomeScreen = ({ navigation }) => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
   const [address, setAddress] = useState('');
-  const [startDate, setStartDate] = useState(new Date());
+  //const [startDate, setStartDate] = useState(new Date());
   const [day, setDay] = useState('1');
   const [selectedOption, setSelectedOption] = useState('');
 
+  const baseURL = 'https://vm.epictravel.ai';
+  const dataff = [
+    {
+      username: "balqissslah",
+      bio: "Hello there, I'm Balqis Khai, and if there's one thing I'm truly passionate about, it's traveling. Embarking on new adventures, discovering the world.",
+      href: baseURL + "/influencer-user/3",
+      imageSource: require('./assets/balqis.jpg'), // Replace with your image path
+    },
+    {
+      username: "Hnsharf",
+      bio: "I'm Hanisah, and let me tell you, I have an unwavering passion for travel. The world is my playground, and I've made it my mission to explore its endless wonders, immerse in diverse cultures, and seek breathtaking adventures. 🚀",
+      href: baseURL + "/influencer-user/4",
+      imageSource: require('./assets/nisah.jpg'), // Replace with your image path
+    },
+    {
+      username: "testing",
+      bio: "Hey there, I'm utterly captivated by the world of travel. For me, the allure of distant horizons, the taste of exotic",
+      href: baseURL + "/influencer-user/7",
+      imageSource: require('./assets/bungaProfile.jpg'), // Replace with your image path
+    }
+  ];
+
   const datam = [
     {
-      id: '1',
-      name: 'Malacca Food Trip',
-      rating: 3.4,
+     id: '22',
+      name: "Malacca Food Trip",
+      destinatio:'Malacca',
+      rating: 4.0,
       imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/06/74/97/83.jpg',
-      subheading: 'Experience cooking local cuisine.'
+      subheading: 'Experience cooking local cuisine.',
+	// type of attraction: ["Outdoor Activities", "Place of Interest"],
+	interest: ["Food Outlet", "Shopping", "Hop On Hop Off", "Walking Tour", "Gardens"]
+
     },
-    {
-      id: '2',
+{
+      id: '7',
+      destinatio:'Kuala Lumpur',
       name: 'Buffet at KL Tower',
-      rating: 4,
+      rating: 4.0,
       imageUrl: 'https://media-cdn.tripadvisor.com/media/photo-s/14/b2/99/e9/atmosphere360-revolving.jpg',
-      subheading: 'Experience buffet with a great view.'
+      subheading: 'Experience buffet with a great view.',
+	// type of attraction: ["Outdoor Activities", "Place of Interest"],
+	interest: ["Food Outlet", "Shopping", "Hop On Hop Off", "Walking Tour", "Gardens"]
+
     },
-    {
-      id: '3',
-      name: 'Heritaeg Food Hunting',
-      rating: 4,
+{
+      id: '23',
+      destinatio:'Penang',
+      name:  "Heritage Food Hunting",
+      rating: 4.0,
       imageUrl: 'https://images.squarespace-cdn.com/content/v1/52edcfd2e4b01873108351ab/1559650248131-Q1EGEA9NGM2IJ82FVRRZ/HOP+Lunch+Hop+Penang+George+Town+Food+Tour+1?format=1500w',
-      subheading: 'Experience fantastic food from Penang.'
+      subheading: 'Experience fantastic food from Penang.',
+	// type of attraction: ["Outdoor Activities", "Place of Interest"],
+	interest: ["Food Outlet", "Shopping", "Hop On Hop Off", "Walking Tour", "Gardens"]
+
     },
-    {
-      id: '4',
-      name: 'Private Hands-on Cooking',
-      rating: 4.6,
+
+{
+      id: '9',
+      destinatio:'Kuala Lumpur',
+      name:  "Private Hands-on Cooking",
+      rating: 4.0,
       imageUrl: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/07/5e/7e/90.jpg',
-      subheading: 'Experience cooking local cuisine.'
+      subheading: 'Experience cooking local cuisine.',
+	// type of attraction: ["Outdoor Activities", "Place of Interest"],
+	interest: ["Food Outlet", "Shopping", "Hop On Hop Off", "Walking Tour", "Gardens"]
+
     },
    
   ];
-
   const datao = [
     {
-      id: '2',
-      name: "Kuala Lumpur's Legacy",
+      id: '25',
+      destinatio:'Kuala Lumpur',
+      name: "Kuala Lumpur Discovery",
       rating: 4.0,
-      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/10/5e/52/3a.jpg',
-      subheading: 'Explore Kuala Lumpur s vibrant history with outdoor activities at ionic monuments and educational visits to various museums.',
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0a/31/85/81.jpg',
+      subheading: 'Embark on a day tour to the bustling city of Kuala Lumpur, where a blend of Malaysian heritage, delectable local cuisine, and stunning natural attractions await you.',
 	// type of attraction: ["Outdoor Activities", "Monuments", "Museums"]
 	interest: ["Fruit Valley", "Rainforest", "House of Celebrities/VVIPs"]
 
     },
 {
-      id: '4',
-      name: 'Aqua Escapeds in KL',
+      id: '26',
+      name: 'Adventure in Malaysia Rafting and Exploration',
+      destinatio:'Gopeng',
       rating: 4.0,
-      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0a/38/b7/2c.jpg',
-      subheading: 'Dive into water activities at KL s esteemed parks - from peaceful boat rides to refreshing dips in large, sparkling pools.',
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/11/cb/45/d0.jpg',
+      subheading: 'Start your day Malaysian adventure with a thrilling whitewater rafting at the Kampar River, culminating in an idyllic camping by the riverside.',
 	// type of attraction: ["Water Activities", "Parks"]
 	interest: ["Rivers", "Water Park", "Forest Park"]
 
     },
 {
-      id: '5',
-      name: 'Serene Spaces in KL',
+      id: '27',
+      destinatio:'Kuala Lumpur',
+      name: 'Exploration of Kuala Lumpurs Natural and Cultural Heritage',
       rating: 4.0,
-      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/09/91/90/65.jpg',
-      subheading: 'Discover the tranquility of KL s lush parks and the spiritual calm at revered worship sites for a moment of peace.',
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/07/70/cf/24.jpg',
+      subheading: 'Indulge in a day memorable journey through Kuala Lumpur s stunning natural, zoological, and cultural attractions.',
 	// type of attraction: ["Worship Places", "Parks"]
 	interest: ["Theme Park", "Nature Park", "Forest Park"]
 
     },
 {
-      id: '6',
-      name: 'Heritage & Harmony in KL',
+      id: '28',
+      destinatio:'Kuala Lumpur',
+      name: 'Cultural and Historical Immersion Tour in Kuala Lumpur',
       rating: 4.0,
-      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/34/bf/c6.jpg',
-      subheading: 'Visit historic monuments, intriguing museums and sacred worship places to understand the cultural facric of Kuala Lumpur',
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/df/b9/01.jpg',
+      subheading: 'Embark on a day journey to explore the fascinating cultural, historical and architectural uniqueness of Kuala Lumpur.',
 	// type of attraction: ["Monuments & Museums", "Worship Places"]
 	interest: ["Galleries", "Memorial", "Palace"]
 
     },
 {
-      id: '7',
-      name: 'Active explorations on KL',
+      id: '29',
+      destinatio:'Kuala Lumpur',
+      name: 'Charismatic Kuala Lumpur Tour',
       rating: 4.0,
-      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/2d/2f/c9.jpg',
-      subheading: 'Indulge in exhilarating outdoor activities while discovering KL s unique place of interest.',
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/10/5e/3c/31.jpg',
+      subheading: 'Embark on a day journey exploring the historic, culinary, and natural beauty of Kuala Lumpur.',
 	// type of attraction: ["Outdoor Activities", "Place of Interest"]
 	interest: ["Food Outlet", "Shopping", "Hop On Hop Off", "Walking Tour", "Gardens"]
 
     },
 {
-      id: '8',
-      name: 'Past & Present in Green',
+      id: '30',
+      destinatio:'Kuala Lumpur',
+      name: 'Essential Kuala Lumpur Tour',
       rating: 4.0,
-      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/df/b9/01.jpg',
-      subheading: 'Immerse yourself in a day of knowledge and nature as you visit KL s monuments, museums, and beautiful parks.',
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/2c/f7/e9.jpg',
+      subheading: 'Explore the vibrant heart of Malaysia with this day tour of Kuala Lumpur, a diverse city thriving with history, culture, and culinary delights.',
 	// type of attraction: ["Monuments", "Museums", "Parks"]
 	interest: ["Central Marks", "Eco Park Palace", "Memorial", "Theme Park"]
 
     },
-{
-      id: '9',
-      name: "KL's Sea and Sightseeing",
-      rating: 4.0,
-      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/e6/5f/d5.jpg',
-      subheading: 'Experience KL s exciting water activities and visit city s popular attractions to create lasting memories.',
-	// type of attraction: ["Water Activities", "Place of Interest"]
-	interest: ["Diving Beach", "Zoo", "Aquaria", "Science Centre"]
+// {
+//       id: '31',
+//       destinatio:'Kuala Lumpur',
+//       name: "5-Day Kuala Lumpur Adventure and Cultural Discoveries",
+//       rating: 4.0,
+//       imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/06/71/3d/e0.jpg',
+//       subheading: 'Experience KL s exciting water activities and visit city s popular attractions to create lasting memories.',
+// 	// type of attraction: ["Water Activities", "Place of Interest"]
+// 	interest: ["Diving Beach", "Zoo", "Aquaria", "Science Centre"]
 
-    },
+//     },
 {
-      id: '10',
-      name: "KL's Active Aqua Adventure",
+      id: '32',
+      destinatio:'Kuala Lumpur',
+      name: "Kuala Lumpur Natural Wonder Expedition",
       rating: 4.0,
-      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/07/a3/48/84.jpg',
-      subheading: 'Experience the best of both worlds with Kuala Lumpur s outdoor and water activities, a perfect blend of adventure and fun.',
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/39/c1/e7.jpg',
+      subheading: 'Uncover the stunning array of nature and wildlife Kuala Lumpur has to offer in this immersive day tour.',
 	// type of attraction: ["Outdoor Activities", "Water Activities"],
 	interest: ["Rainforest", "Island", "Waterfall", "Diving"]
 
     },
 {
-      id: '11',
-      name: 'Outdoor Oasis of KL',
+      id: '33',
+      destinatio:'Kuala Lumpur',
+      name: 'Adventure and Relaxation Tour in Kuala Lumpur',
       rating: 4.0,
-      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/07/04/da/44.jpg',
-      subheading: 'Unwind amidst nature with engaging outdoor activities in the city s most loved parks.',
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/09/19/8e/c1.jpg',
+      subheading: 'This day tour offers a comprehensive exploration of some of the best that Kuala Lumpur has to offer.',
 	// type of attraction: ["Outdoor Activities", "Parks"]
 	interest: ["Hills", "Recreational Forest", "Nature Park", "Water Park"]
 
     },
 {
-      id: '12',
-      name:  "sKL's Green & Vibrant Visits",
+      id: '34',
+      destinatio:'Kuala Lumpur',
+      name:  "Exquisite Discovery of Kuala Lumpur",
       rating: 4.0,
-      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/07/04/da/44.jpg',
-      subheading: 'Enjoy a day out at KL s parks and explore city s notable places of interest, all in one itinerary.',
+      imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/e6/5f/d5.jpg',
+      subheading: "This exhilarating day tour planned meticulously will take you through some of Kuala Lumpur's notable landmarks including the iconic Petronas Twin Towers the historic National Monument and the famous Batu Caves.",
 	// type of attraction: ["Place of Interest", "Parks"]
 	interest: ["Water Park", "Wetland Park", "Railway Station", "Health Places like SPAs", "Entertainment Places like Pub/Club/Cafes"]
 
     },
 
 
-    // {
-    //   id: '1',
-    //   name: 'Private Tour Kuala Lumpur',
-    //   rating: 4.0,
-    //   imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/09/dd/1b/4d.jpg',
-    //   subheading: 'Get a bird s-eye view over Kuala Lumpur.'
-    // },
-    // {
-    //   id: '2',
-    //   name: 'Private Cameron Tour',
-    //   rating: 4,
-    //   imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/37/3d/ac.jpg',
-    //   subheading: 'Enjoy the flexibility of independent travel.'
-    // },
-    // {
-    //   id: '3',
-    //   name: 'Waterfall at Batu Caves',
-    //   rating: 4,
-    //   imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/07/7e/e9/71.jpg',
-    //   subheading: 'Have a refreshing splash.'
-    // },
-    // {
-    //   id: '4',
-    //   name: 'Glowing Kuala Selangor',
-    //   rating: 4.6,
-    //   imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0a/58/19/9f.jpg',
-    //   subheading: 'Experience the natural  phenomenon.'
-    // },
+    
    
   ];
+
+
   
-  
+  const dispatch = useDispatch();
   const handleNavigate = (urlmain) => {
     // Your navigation logic here
+    
     navigation.navigate('web', { urlmain }); // Pass the urlmain parameter to the 'web' screen
-    console.log('Search button pressed');
+    console.log('Search button pressed',urlmain);
+  };
+
+  const handleNavigate1 = (urlmain) => {
+    // Your navigation logic here
+    
+    navigation.navigate('web1', { urlmain }); // Pass the urlmain parameter to the 'web' screen
+    console.log('Search button pressed',urlmain);
   };
   const dataw = [
     {
-      id: '1',
+      id: '17',
+      destinatio:'Batu Caves',
       name: 'Guided Rock Climbing',
-      rating: 3.4,
+      rating: 4.0,
       imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/07/3a/55/03.jpg',
-      subheading: 'Climb the rocks of Batu Caves.'
+      subheading: 'Climb the rocks of Batu Caves.',
+	// type of attraction: ["Outdoor Activities", "Parks"]
+	interest: ["Hills", "Recreational Forest", "Nature Park", "Water Park"]
+
     },
-    {
-      id: '2',
+{
+      id: '21',
+      destinatio:' Dabong',
       name: 'Train Trip to Dabong',
-      rating: 4,
+      rating: 4.0,
       imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/90/KTM_class_61.jpg',
-      subheading: 'Hop on a train to venture Dabong.'
+      subheading: 'Hop on a train to venture Dabong.',
+	// type of attraction: ["Outdoor Activities", "Water Activities"]
+	interest: ["Rainforest", "Island", "Waterfall", "Diving"]
+
     },
-    {
-      id: '3',
-      name: 'Guided Snorkeling Trip',
-      rating: 4,
+{
+      id: '20',
+      destinatio:'Kota Kinabalu',
+      name: 'Guided Snorkeling trip',
+      rating: 4.0,
       imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/07/7e/e9/71.jpg',
-      subheading: 'Discover Sabah s sea safely.'
+      subheading: 'Discover Sabah s sea safely.',
+	// type of attraction: ["Place of Interest", "Water Activities"]
+	interest: ["Diving Beach", "Zoo", "Aquaria", "Science Centre"]
+
     },
-    {
-      id: '4',
-      name: 'Scuba Diving',
-      rating: 4.6,
+{
+      id: '19',
+      destinatio:'Redang Island',
+      name: "Scuba Diving",
+      rating: 4.0,
       imageUrl: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/07/8f/a8/8c.jpg',
-      subheading: 'Explore the sea with guidance.'
+      subheading: 'Explore the sea with guidance.',
+	// type of attraction: ["Water Activities", "Place of Interest"]
+	interest: ["Diving Beach", "Zoo", "Aquaria", "Science Centre"]
+
     },
-   
   ];
 
 
@@ -290,14 +338,18 @@ const handleConfirm = (date) => {
     setDropdownOpen(false);
   };
 
-
+  // useEffect(() => {
+  //   // This code will execute when the component is mounted or re-rendered
+  //   setSelectedDate(selectedDate);
+  //  // Alert.alert("daaaa")
+  // }, [selectedDate]);
 
 
   const [isDropdownOpendays, setDropdownOpendays] = useState(false);
-  const [selectedThemedays, setSelectedThemedays] = useState('Day 1');
+  const [selectedThemedays, setSelectedThemedays] = useState('1 Day');
   const [selectedThemedays1, setSelectedThemedays1] = useState('1');
 
-  const themesdays = ['Day 1', 'Day 2', 'Day 3','Day 4','Day 5'];
+  const themesdays = ['1 Day', '2 Day', '3 Day','4 Day','5 Day'];
   const toggleDropdowndays = () => {
     setDropdownOpendays(!isDropdownOpendays);
   };
@@ -331,31 +383,97 @@ const handleConfirm = (date) => {
 
   // Function to handle navigation when the "Search" button is pressed
   const handleNavigate689 = () => {
+
+
+    const receivedData = {
+      theme: 2,
+      message: inputValue,
+      date: selectedDate.toString(),
+      days: selectedThemedays1.toString(),
+      id:'iiii'
+    };
+    console.log("qqqqq",selectedDate.toString())
+
+    dispatch(fetchData(receivedData));
+ //Alert.alert("idd",selectedThemedays1)
     // Your navigation logic here
     title="Go to Details"
      navigation.navigate('Details', {
       address: inputValue,
       day: selectedThemedays1,
-      date: selectedDate,
+      date: selectedDate.toString(),
 id:'ffff'
 
 
-    });
-    console.log('Search button pressed');
+   });
+    console.log('Search button pressed',selectedThemedays1);
   };
+
+
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hour = String(date.getHours()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}-12h`;
+    return formattedDate;
+  }
+
+
+
+  const handleItemClick2 = (item) => {
+
+  
+    // You can do any other action you want here
+  };
+
   const handleItemClick = (item) => {
- //   Alert.alert(item.name)
-    // Perform your action when an item is clicked
+
+    const receivedData = {
+      theme: 2,
+      message: item.destinatio,
+      date: selectedDate.toString(),
+      days: selectedThemedays1,
+      id:item.id
+    };
+
+    dispatch(fetchData(receivedData));
   
     navigation.navigate('Details', {
-     address: 'kuala lumpur',
+     address: item.destinatio,
      day: selectedThemedays1,
-     date: selectedDate,
+     date: selectedDate.toString(),
      id:item.id
-
    });
     // You can do any other action you want here
   };
+
+
+
+ 
+  const renderItem2 = ({ item }) => {
+    return (
+      <TouchableOpacity onPress={() => {  urlmain = ``;
+
+      handleNavigate1(item.href); } }>
+      <View style={{ flexDirection: 'column', alignItems: 'center', marginBottom: 10, width: 240 }}>
+  
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Image source={item.imageSource} style={{ width: 100, height: 100, borderRadius: 50 ,marginLeft:-20,marginTop:10}} />
+          <Text style={{ fontWeight: 'bold', fontSize: 16, marginLeft: 10 }}>{item.username}</Text>
+        </View>
+  
+        <View style={{ marginLeft: 10, width: 220, marginTop: 10 }}>
+          <Text style={{ fontSize: 14 }} numberOfLines={3} ellipsizeMode="tail">{item.bio}</Text>
+        </View>
+      </View>
+      </TouchableOpacity>
+    );
+  };
+  
+  
+  
+
 
   const renderItem = ({ item }) => (
     
@@ -404,8 +522,43 @@ id:'ffff'
     <View style={[styles.transportItem, { alignItems: 'center' }]}>
       <TouchableOpacity
         onPress={() => {
-          const urlmain = 'http://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fhotels';
-          handleNavigate(urlmain);
+         
+          //  const currentDate = selectedDate
+            const updatedDate = new Date(selectedDate.getTime());
+            const updatedDate1 = new Date(selectedDate.getTime());
+            updatedDate.setDate(updatedDate.getDate() +  1);
+            
+            // Format the date as "YYYY-MM-DD"s
+            const year = updatedDate1.getFullYear();
+            const month = String(updatedDate1.getMonth() + 1).padStart(2, '0');
+            const day = String(updatedDate1.getDate()).padStart(2, '0');
+         
+            const year1 = updatedDate.getFullYear();
+            const month1 = String(updatedDate.getMonth() + 1).padStart(2, '0');
+            const day1 = String(updatedDate.getDate()).padStart(2, '0');
+         
+            const formattedDate1 = `${year}-${month}-${day}`;
+            const formattedDate2 = `${year1}-${month1}-${day1}`;
+
+            var  urlmain  =""
+            const encodedCityName = encodeURIComponent(inputValue);
+            if (inputValue.trim() === '') {
+               
+             
+             urlmain = `http://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fhotels/${encodeURIComponent("kuala Lumpur")}/${formattedDate1}/${formattedDate2}?sort=distance_a`;
+
+             handleNavigate(urlmain);    
+            
+            }
+                  else
+                  {
+                    urlmain = `http://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fhotels/${encodedCityName}/${formattedDate1}/${formattedDate2}?sort=distance_a`;
+
+                    handleNavigate(urlmain);
+                  }
+
+         
+         //</View></View> handleNavigate(urlmain);
         }}
         style={{ alignItems: 'center' }}
       >
@@ -430,8 +583,24 @@ id:'ffff'
     <View style={[styles.transportItem, { alignItems: 'center' }]}>
       <TouchableOpacity
         onPress={() => {
-          const urlmain = 'https://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fcars';
+
+         // const currentDate = new Date();
+          const nextDay = new Date(selectedDate);
+          nextDay.setDate(selectedDate.getDate() + 1);
+          
+          const nextThreeDays = new Date(nextDay);
+          nextThreeDays.setDate(nextDay.getDate() + 3);
+          
+          const formattedCurrentDate = formatDate(selectedDate);
+          const formattedNextDay = formatDate(nextDay);
+          const formattedNextThreeDays = formatDate(nextThreeDays);
+          
+          const encodedCityName = encodeURIComponent(inputValue || "Kuala-Lumpur-Intl,Kuala-Lumpur,Malaysia,-KUL-c4723-lKUL");
+          
+          const urlmain = `https://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fcars/${encodedCityName}/${formattedNextDay}/${formattedNextThreeDays}`;
           handleNavigate(urlmain);
+          
+          
         }}
         style={{ alignItems: 'center' }}
       >
@@ -513,6 +682,7 @@ id:'ffff'
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode="date"
+        date={selectedDate}
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
       />
@@ -552,7 +722,7 @@ id:'ffff'
           <View style={styles.dropdown1}>
           {themesdays.map((theme, index) => (
   <TouchableOpacity key={index} onPress={() => {
-    setSelectedThemedays1(index);
+    setSelectedThemedays1(index+1);
     selectedThemeday(theme);
   }}>
     <Text style={styles.dropdownItem1}>{theme}</Text>
@@ -627,6 +797,15 @@ id:'ffff'
       keyExtractor={(item) => item.id}
       horizontal={true} // Set horizontal to true
     />
+
+<Text style={styles.headingttile}>Featured local Experts</Text>
+<FlatList
+      data={dataff}
+      renderItem={renderItem2}
+      keyExtractor={(item) => item.username}
+      horizontal={true}
+    />
+
      
       </ScrollView>
     </SafeAreaView>

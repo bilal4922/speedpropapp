@@ -13,6 +13,9 @@ const WebViewScreen = ({ navigation,route }) => {
     });}, [navigation]);
   
    const { urlmain } = route.params;
+  // const encodedUrlmain = encodeURIComponent(urlmain);
+ //  Alert.alert(urlmain)
+   //const encodedUrlmain = encodeURIComponent(urlmain)
  // const { webUrl } = route.params; // Get the webUrl from the route parameters
   const [isLoading, setIsLoading] = useState(true);
 
@@ -36,7 +39,7 @@ const WebViewScreen = ({ navigation,route }) => {
         />
       )}
       <WebView
-        source={{ uri: urlmain }}
+        source={{ uri:urlmain }}
         style={styles.webView}
         androidHardwareAccelerationDisabled={true}
         javaScriptEnabled={true} // Enable JavaScript if needed

@@ -128,11 +128,13 @@ const SignInPageV2 = ({ navigation }) => {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       console.log('User Info:', userInfo);
-
-      // Extract email and name from userInfo
-      const { email, name } = userInfo.user;
+  
+      // Extract email, name, token, and ID from userInfo
+      const { email, name, idToken, serverAuthCode } = userInfo.user;
       console.log('Email:', email);
       console.log('Name:', name);
+      console.log('ID Token:', idToken);
+      console.log('Server Auth Code:', serverAuthCode);
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // User cancelled the sign-in process
@@ -149,6 +151,7 @@ const SignInPageV2 = ({ navigation }) => {
       }
     }
   }
+  
 
   // Use navigation.setOptions to hide the header
   React.useLayoutEffect(() => {

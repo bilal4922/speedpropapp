@@ -38,6 +38,14 @@ const DIYOverviewPage = ({ navigation ,route}) => {
   ];
 
 
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hour = String(date.getHours()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}-12h`;
+    return formattedDate;
+  }
 
   function findThumbnailURLIndex1(data3, title) {
     for (let i = 0; i < data3.length; i++) {
@@ -52,7 +60,7 @@ const DIYOverviewPage = ({ navigation ,route}) => {
   const handleNavigate = (urlmain) => {
     // Your navigation logic here
     navigation.navigate('web', { urlmain }); // Pass the urlmain parameter to the 'web' screen
-    console.log('Search button pressed');
+    console.log('Search button pressed',urlmain);
   };
 
   const [isModalVisible, setModalVisible] = useState(false);
@@ -81,39 +89,44 @@ const DIYOverviewPage = ({ navigation ,route}) => {
   const { address,
     day,
     date,id } = route.params;
+
+
+    const dateString = date // Replace this with your date string
+const dateObject = new Date(dateString);
+
+console.log(dateObject); // This will log the Date object to the console
+
   const receivedData = {
     theme: 2,
     message: address,
     days: day,
-    date: date,
+    date: dateObject,
     id:id
   };
 
-  useEffect(() => {
-    handleNavigate689();
-  }, []);
+  
 
-  const handleNavigate689 = () => {
+  // const handleNavigate689 = () => {
    
    
-    const receivedData1 = {
-      theme: 2,
-      message: address,
-      days: day,
-      date: date,
-      id:id
-    };
+  //   // const receivedData1 = {
+  //   //   theme: 2,
+  //   //   message: address,
+  //   //   days: day,
+  //   //   date: date,
+  //   //   id:id
+  //   // };
 
-    try {
-      // if (loading) {
-        dispatch(fetchData(receivedData1));
-    //  } else {
-     //   dispatch(fetchData(receivedData1));
-      //}
-    } catch (error) {
-      console.error('An error occurred:', error);
-    }
-  };
+  //   try {
+  //     console.log('Annnn ', date);
+  //       // dispatch(fetchData(receivedData));
+  //   //  } else {
+  //    //   dispatch(fetchData(receivedData1));
+  //     //}
+  //   } catch (error) {
+  //     console.error('An error occurred:', error);
+  //   }
+  // };
 
   const [email, setEmail] = React.useState("");
   const renderThumbnail = (place) => {
@@ -218,20 +231,21 @@ const DIYOverviewPage = ({ navigation ,route}) => {
               <View style={{alignItems:'center'}}>
                 <Text style={styles.dayText}>Day {item.day}</Text>
                 {(() => {
-                  const currentDate = new Date(receivedData.date);
-                  const updatedDate = new Date(currentDate.getTime());
-                  updatedDate.setDate(updatedDate.getDate() + item.day - 1);
+                 
+                 const currentDate = new Date(receivedData.date);
+                 const updatedDate = new Date(currentDate.getTime());
+                 updatedDate.setDate(updatedDate.getDate() + item.day - 1);
 
-                  const dayOfMonth = updatedDate.getDate();
-                  const startMonthString = monthNames[updatedDate.getMonth()];
-                  const formattedDate = `${dayOfMonth} ${startMonthString}`;
+                 const dayOfMonth = updatedDate.getDate();
+                 const startMonthString = monthNames[updatedDate.getMonth()];
+                 const formattedDate = `${dayOfMonth} ${startMonthString}`;
 
                   return (
-                    receivedData.days !== null ? (
+                   
                       <Text style={{ color: '#202756',textAlign:'center' }}>
-                        &nbsp;&nbsp; {formattedDate}
+                        &nbsp;&nbsp;{formattedDate} 
                       </Text>
-                    ) : null
+                    
                   );
                 })()}
               </View>
@@ -251,8 +265,30 @@ const DIYOverviewPage = ({ navigation ,route}) => {
   }} name="airplanemode-active" color="#202756" size={30} style={styles.icon} />
 
 <Icon2  onPress={() => {
-    const urlmain = 'https://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fcars';
-    handleNavigate(urlmain);
+
+
+
+const nextDay = new Date(receivedData.date);
+          nextDay.setDate(receivedData.date.getDate() + 1);
+          
+          const nextThreeDays = new Date(nextDay);
+          nextThreeDays.setDate(nextDay.getDate() + 3);
+          
+          const formattedCurrentDate = formatDate(receivedData.date);
+          const formattedNextDay = formatDate(nextDay);
+          const formattedNextThreeDays = formatDate(nextThreeDays);
+          
+          const encodedCityName = encodeURIComponent(receivedData.message || "Kuala-Lumpur-Intl,Kuala-Lumpur,Malaysia,-KUL-c4723-lKUL");
+          
+          const urlmain = `https://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fcars/${encodedCityName}/${formattedNextDay}/${formattedNextThreeDays}`;
+          handleNavigate(urlmain);
+
+
+
+// const urlmain = `https://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fcars/${receivedData.message}/${formattedDate2}?sort=rank_a`;
+//  // https://www.kayak.com.my/cars/Kuala-Lumpur%2CMalaysia-c4723/2023-10-13/2023-10-17?sort=rank_a
+//    // const urlmain = 'https://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fcars';
+//     handleNavigate(urlmain);
   }} name="car" color="#202756" size={25} style={styles.icon} />
           <Icon name="directions-train"
           
@@ -310,18 +346,18 @@ const DIYOverviewPage = ({ navigation ,route}) => {
         </View>
         {/* {data3 && data3.length > 0 && renderThumbnail(item.morningplace)} */}
       </View>
-      <View style={styles.transportContainer}>
+      {/* <View style={styles.transportContainer}>
                 <Icon  name="local-restaurant" color="#202756" size={30} style={{marginLeft:10,marginRight:10}} />
-             
+              */}
 
                 {/* <Text style={styles.activityText}>lunch ideas</Text> */}
-                <View style={styles.iconContainer}>
+                {/* <View style={styles.iconContainer}>
                 
                 <Text style={{ fontWeight: '300', fontSize: 17 ,marginTop:5 }}>
       <TouchableOpacity
 
 onPress={() => {
-  const urlmain = `https://www.viator.com/searchResults/all?pid=P00094549&mcid=42383&medium=link&text=${item.lunch}, ${receivedData.message}`;
+  const urlmain = `https://www.viator.com/searchResults/all?pid=P00094549&mcid=42383&medium=link&text=${receivedData.message}' food local restaurants'`;
   handleNavigate(urlmain);
 }}
       //   onPress={() =>
@@ -337,13 +373,13 @@ onPress={() => {
           {item.lunch}
         </Text>
         <Text style={styles.activityText}>lunch ideas</Text> */}
-      </TouchableOpacity>
+      {/* </TouchableOpacity>
       </Text>
-        
+         */}
       
                 
-                </View>
-              </View>
+                {/* </View> */}
+              {/* </View> */}
 
 
 
@@ -383,41 +419,40 @@ onPress={() => {
         </View>
 
 
-        <View style={styles.transportContainer}>
+        {/* <View style={styles.transportContainer}>
                 <Icon  name="local-restaurant" color="#202756" size={30} style={{marginLeft:10,marginRight:10}} />
-             
+              */}
 
                 {/* <Text style={styles.activityText}>Dinner</Text> */}
-                <View style={styles.iconContainer}>
+                {/* <View style={styles.iconContainer}>
                 
                 <Text style={{ fontWeight: '300', fontSize: 17, marginTop:5 }}>
-      <TouchableOpacity
+      <TouchableOpacity */}
 
 
-onPress={() => {
+{/* onPress={() => {
   
-  const urlmain = `https://www.viator.com/searchResults/all?pid=P00094549&mcid=42383&medium=link&text=${item.dinner}, ${receivedData.message}`;
-            // handleNavigate(urlmain);
+  const urlmain = `https://www.viator.com/searchResults/all?pid=P00094549&mcid=42383&medium=link&text=${receivedData.message}' food local restaurants'`;
+
+             handleNavigate(urlmain);
 }}
-        // onPress={() =>
-        //   Linking.openURL(
+        // onPress={() => */}
+        {/* //   Linking.openURL(
         //     `http://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fhotels`
         //   )
-        // }
-      >
-                <Text style={[styles.activityText, { textDecorationLine: 'underline' }]}>Dinner ideas</Text>
-
+        // } */}
+   
         {/* <Text style={{ textDecorationLine: 'underline', color: '#202756', fontSize: 17 }}>
           {item.dinner}
         </Text> */}
-      </TouchableOpacity>
+      {/* </TouchableOpacity>
       </Text>
         
       
                 
                 </View>
               </View>
-
+ */}
 
 
               <View style={[styles.transportContainer, { marginTop: 10 }]}>
@@ -438,7 +473,7 @@ onPress={() => {
               style={{ color: '#202756', textDecorationLine: 'underline' }}
 
               onPress={() => {
-                const urlmain = `https://www.viator.com/searchResults/all?pid=P00094549&mcid=42383&medium=link&text=${item.afternoonplace}, ${receivedData.message}`;
+                const urlmain = `https://www.viator.com/searchResults/all?pid=P00094549&mcid=42383&medium=link&text=${item.eveningplace}, ${receivedData.message}`;
                 handleNavigate(urlmain);
               }}
               // onPress={() =>
@@ -465,7 +500,25 @@ onPress={() => {
                 <Text style={{ fontWeight: '300', fontSize: 14 ,marginTop:5 }}>
       <TouchableOpacity
            onPress={() => {
-            const urlmain = `http://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fhotels/${receivedData.message}?sort=distance_a`;
+            const currentDate = new Date(receivedData.date);
+            const updatedDate = new Date(currentDate.getTime());
+            const updatedDate1 = new Date(currentDate.getTime());
+            updatedDate.setDate(updatedDate.getDate() + item.day - 1);
+            
+            // Format the date as "YYYY-MM-DD"
+            const year = updatedDate1.getFullYear();
+            const month = String(updatedDate1.getMonth() + 1).padStart(2, '0');
+            const day = String(updatedDate1.getDate()).padStart(2, '0');
+         
+            const year1 = updatedDate.getFullYear();
+            const month1 = String(updatedDate.getMonth() + 1).padStart(2, '0');
+            const day1 = String(updatedDate.getDate()).padStart(2, '0');
+         
+            const formattedDate1 = `${year}-${month}-${day}`;
+            const formattedDate2 = `${year1}-${month1}-${day1}`;
+            const encodedCityName = encodeURIComponent(receivedData.message);
+
+            const urlmain = `http://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fhotels/${encodedCityName}/${formattedDate1}/${formattedDate2}?sort=distance_a`;
             handleNavigate(urlmain);
             // const urlmain = `https://www.viator.com/searchResults/all?pid=P00094549&mcid=42383&medium=link&text=${item.lunch}, ${receivedData.message}`;
             // handleNavigate(urlmain);

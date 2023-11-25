@@ -1,26 +1,30 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Import the desired icon library
+import React, { useState } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const CustomHeader = ({ navigation }) => {
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  // Function to set selectedDate to the current date
+  const handleBackPress = () => {
+    setSelectedDate(new Date());
+   // Alert.alert("BackPress",selectedDate)
+    navigation.goBack();
+  };
+
   return (
     <View style={styles.headerContainer}>
-      {/* Left: Custom Back Icon */}
       {navigation && navigation.canGoBack() ? (
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-left"  color="#202756" size={24}  />
+        <TouchableOpacity onPress={handleBackPress}>
+          <Icon name="arrow-left" color="#202756" size={24} />
         </TouchableOpacity>
       ) : null}
 
-      {/* Center: App Logo */}
-      {/* Replace 'visitmalaysia.png' with your app logo source */}
       <Image
         source={require('./assets/visitmalaysia.png')}
         style={styles.logo}
       />
 
-      {/* Right: Custom Notification Icon */}
-      {/* Replace 'bell.png' with your notification icon source */}
       <Image
         source={require('./assets/bell.png')}
         style={styles.icon}
