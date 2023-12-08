@@ -18,8 +18,6 @@ import Icon2 from 'react-native-vector-icons/FontAwesome';
 
 import DateTimePicker from '@react-native-community/datetimepicker'; // Import DateTimePicker for date selection
 import { ScrollView } from 'react-native-gesture-handler';
-//import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-//import {apiKey} from './config'; // your google cloud api key
 
 const HomeScreen = ({ navigation }) => {
       // Use navigation.setOptions to hide the header
@@ -355,10 +353,6 @@ const handleConfirm = (date) => {
   const toggleDropdowndays = () => {
     setDropdownOpendays(!isDropdownOpendays);
   };
-  const apiKey = "AIzaSyBQ1DlVO0Jm2yrj8Oit3BjbLUaFQzsk5Vo";
-
-  //API Key: AIzaSyBQ1DlVO0Jm2yrj8Oit3BjbLUaFQzsk5Vo
-
 
   const selectedThemeday = (themesdays) => {
     setSelectedThemedays(themesdays);
@@ -387,32 +381,6 @@ const handleConfirm = (date) => {
     setSelectedOption(value);
   };
 
-  const [selectedDestinations, setSelectedDestinations] = useState([]);
-  const [autocompleteValue, setAutocompleteValue] = useState('');
-
-
-  // const handlePlacePress = (data, details = null) => {
-  //   // Assuming 'types' is an array containing the types of the selected place
-  //   const isDestination = details?.types?.includes('tourist_attraction') || details?.types?.includes('natural_feature');
-
-
-  //   console.log(details,"aaaaaaaa")
-  //   if (isDestination) {
-  //     setSelectedDestinations([...selectedDestinations, { data, details }]);
-  //   }
-  // };
-  const handlePlacePress = (data, details = null) => {
-    if (data) {
-      const nameToShow = data?.structured_formatting?.main_text || data.description || '';
-  
-      console.log(nameToShow, "kkkkkkk");
-      setAutocompleteValue(nameToShow);
-  
-      setSelectedDestinations([...selectedDestinations, { name: nameToShow }]);
-    }
-  };
-  
-
   // Function to handle navigation when the "Search" button is pressed
   const handleNavigate689 = () => {
 
@@ -430,7 +398,7 @@ const handleConfirm = (date) => {
  //Alert.alert("idd",selectedThemedays1)
     // Your navigation logic here
     title="Go to Details"
-     navigation.navigate('hotel1', {
+     navigation.navigate('Details', {
       address: inputValue,
       day: selectedThemedays1,
       date: selectedDate.toString(),
@@ -675,74 +643,25 @@ id:'ffff'
 
         <View style={styles.frame}>
           <View style={[styles.destinationinput, styles.frame1FlexBox]}>
-            {/* <Image
+            <Image
               style={styles.vectorIcon}
               resizeMode="cover"
               source={require("./assets/vector1.png")}
-            /> */}
+            />
            
 
-        
-           {/* <GooglePlacesAutocomplete
-  placeholder="Type a place"
-  onPress={(data, details = null) => console.log(data, details)}
-  query={{
-    key: apiKey,
-    components: 'country:my', // 'my' is the country code for Malaysia
-    types: ['(regions)'], // Filter to show only big destinations
-    exclude: ['hospital', 'restaurant'],
-  }}
-  fetchDetails={true}
-  onFail={(error) => console.log(error)}
-  onNotFound={() => console.log('no results')}
-  // styles={{ container: { flex: 1, marginLeft: 10, height: 20 } }} // Apply your custom styles here
-/> */}
-
+       
+           
+           <TextInput 
+  textAlign="left"
+  placeholder="Key in your destinationn"
+  placeholderTextColor="#999"
+  value={inputValue}
+  onChangeText={handleInputChange}
+  style={[styles.keyInYour, styles.dayTypo, { flex: 1, marginLeft: 10, height: 20 }]}
+/>
             
-<View style={{ flex: 1 }}>
-  <GooglePlacesAutocomplete
-   
-    placeholder="Key in your destination"
-    onPress={handlePlacePress}
-    query={{
-      key: apiKey,
-      types: '(cities)', 
-      components: 'country:my'
-    }}
-    
-    fetchDetails={false}
-    enablePoweredByContainer={false}
-    onFail={(error) => console.log(error)}
-    onNotFound={() => console.log('no results')}
-    filterReverseGeocodingByTypes={[
-      'locality',
-      'administrative_area_level_1',
-    ]}
-    renderLeftButton={() => (
-      <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 10 }}>
-        <Image
-          style={styles.vectorIcon}
-          resizeMode="cover"
-          source={require("./assets/vector1.png")}
-        />
-        
-      </View>
-    )}
-    value={autocompleteValue}
-    textInputValue={autocompleteValue}
-    // textInputStyle={{ minHeight: 30, height: 'auto' }} // Set the minimum height
-  />
-
-  {/* <FlatList
-    data={selectedDestinations}
-    value={autocompleteValue}
-    keyExtractor={(item, index) => index.toString()}
-    renderItem={({ item }) => (
-      // Render your FlatList item here using item.data and item.details
-      <Text>{item.data.description}</Text>
-    )}
-  /> */}
-</View>
+       
       
           </View>
           <View style={[styles.frame1, styles.frame1FlexBox]}>
@@ -839,7 +758,7 @@ id:'ffff'
           </View>
         )}  */}
           <View style={styles.searchbutton}>
-            <Text   onPress={handleNavigate689} style={[styles.search, styles.dayTypo]}>SEARCHf</Text>
+            <Text   onPress={handleNavigate689} style={[styles.search, styles.dayTypo]}>SEARCH</Text>
           </View>
         </View>
       </View>
@@ -1030,7 +949,6 @@ const styles = StyleSheet.create({
   },
   destinationinput: {
     paddingHorizontal: 20,
-    
     paddingVertical: Padding.p_mid,
     borderWidth: 0.4,
     borderColor: Color.colorLightsteelblue,
@@ -1047,7 +965,6 @@ const styles = StyleSheet.create({
     },
     backgroundColor: Color.colorWhite,
     alignSelf: "stretch",
-   // minHeight: 20, height: 'auto'
   },
   vectorIcon1: {
     width: 15,

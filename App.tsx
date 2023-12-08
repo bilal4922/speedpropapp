@@ -9,6 +9,9 @@ import web1 from './webview1';
 import signin from './signin';
 import signup from './signup';
 
+import hotel1 from './hotel1';
+import hotel2 from './hotel2';
+import hotel3 from './hotel3';
 import HomeScreen from './HomeScreen';
 import ProfileScreen from './ProfileScreen';
  import SettingsScreen from './SettingsScreen';
@@ -22,6 +25,10 @@ const App = () => {
       <Stack.Navigator initialRouteName="signin">
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="hotel1" component={hotel1} />
+        <Stack.Screen name="hotel2" component={hotel2} />
+        <Stack.Screen name="hotel3" component={hotel3} />
+
         <Stack.Screen name="web" component={web} />
         <Stack.Screen name="web1" component={web1} />
         <Stack.Screen name="signin" component={signin} />
