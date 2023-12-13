@@ -1,7 +1,10 @@
-import { View, Text, Button, SafeAreaView, StatusBar, StyleSheet,TextInput, FlatList,Image,TouchableOpacity } from 'react-native';
+import { View, Text, Button, SafeAreaView, StatusBar, StyleSheet,TextInput, FlatList,Image,TouchableOpacity, Dimensions,ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState ,useEffect } from 'react';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { Rating, AirbnbRating } from 'react-native-ratings';
+import  Icon  from 'react-native-vector-icons/MaterialIcons';
+import { Placeholder, PlaceholderMedia, PlaceholderLine, Fade } from 'react-native-loading-placeholder';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -22,143 +25,216 @@ const HomeScreen = () => {
     {label: 'Finland', value: 'finland'}
   ]);
 
+  const screenWidth = Dimensions.get('window').width;
+  const [hotelsData, setHotelsData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const data = [
-    {
-      id: '1',
-      imageUrl: 'https://c0.wallpaperflare.com/preview/281/900/948/malaysia-johor-bahru.jpg',
-      name: 'Location 1',
-      stars: 4,
-      location: 'Johor Bahru, Malaysia',
-      reviews: '200 Reviews',
-    },
-    {
-      id: '1',
-      imageUrl: 'https://c0.wallpaperflare.com/preview/281/900/948/malaysia-johor-bahru.jpg',
-      name: 'Location 1',
-      stars: 4,
-      location: 'Johor Bahru, Malaysia',
-      reviews: '200 Reviews',
-    },
-    {
-      id: '1',
-      imageUrl: 'https://c0.wallpaperflare.com/preview/281/900/948/malaysia-johor-bahru.jpg',
-      name: 'Location 1',
-      stars: 4,
-      location: 'Johor Bahru, Malaysia',
-      reviews: '200 Reviews',
-    },
-    {
-      id: '1',
-      imageUrl: 'https://c0.wallpaperflare.com/preview/281/900/948/malaysia-johor-bahru.jpg',
-      name: 'Location 1',
-      stars: 4,
-      location: 'Johor Bahru, Malaysia',
-      reviews: '200 Reviews',
-    },
-    // Add more items to the data array as needed
-  ];
+  
   useEffect(() => {
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://halaltravel.ai/ht/api/v1/hotel/search/byPlaceName', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTBAZ21haWwuY29tIiwidXNlcklkIjoxLCJpYXQiOjE3MDIzNzEyNjYsImV4cCI6MTcwMjk3NjA2Nn0.AgpWEvXrt1Gx4AqQHk8JiqsNK7Tsg1W3KvRsAtrYc5RAJsrzTc-V8JsWMMAZ2Ky3DXFt3NrEapB3ZUkWecFy-g'
+            // Add any other headers required by the API
+          },
+          body: JSON.stringify({
+            query: "Penang",
+            language: "en",
+            checkin: "2023-12-15",
+            checkout: "2023-12-17",
+            currency: "MYR",
+            adults: 2,
+            children: []
+          }),
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+  
+        const json = await response.json();
+        setHotelsData(json.elements);
+      } catch (error) {
+        console.error('Failed to fetch hotels:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchData();
+
+    fetchData();
+
     navigation.setOptions({
       headerLeft: () => (
-        <Button
-          onPress={() => navigation.goBack()}
-          title="Back"
-          color="#007AFF" // You can customize the color
-        />
+        <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 10 }}>
+        <Icon name="arrow-back" size={25} color="#007AFF" />
+      </TouchableOpacity>
       ),
+      headerTitle: '',
     });
   }, [navigation]);
 
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-    style={styles.itemContainer}
-    onPress={() => navigation.navigate('hotel2', { item })}
-  >
-    <View style={styles.itemContainer}>
-      <Image
-        style={styles.image}
-        source={{ uri: item.imageUrl }}
-      />
-      <View style={styles.infoContainer}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.nameText}>{item.name}</Text>
-          <Text style={styles.starsText}>{`${item.stars} Stars`}</Text>
+
+
+  // const hotelsData = [
+  //   {
+  //     id: '1',
+  //     hotelName: 'Profolio Straits Quay',
+  //     hotelImage: 'https://cdn.worldota.net/t/1024x768/content/6a/c6/6ac6d47ee69433e1d26ce58b67f7349363094313.jpeg',
+  //     hotelRating: 3,
+  //     hotelAddress: '3H-1-2, Straits Quay, Tanjung Tokong',
+  //     showAmount: 603.00,
+  //     showCurrencyCode: 'MYR',
+  //     roomName: '1 Bedroom Standard Double room (full double bed) (queen size bed, kitchen)',
+  //     meal: 'nomeal',
+  //     freeCancellationBefore: null
+  //   },
+  //   // ... more hotel data
+  // ];
+  
+  const PlaceholderHotelItem1 = () => (
+    <View style={styles.container22}>
+     <Image  style={styles.image} /> 
+    <View style={styles.details}>
+    <View style={styles.header}>
+        <Text style={styles.name}></Text>
+        <View style={{ width: 100, justifyContent: 'flex-start' }}>
+
+        <Rating
+          imageSize={20}
+          readonly
+          startingValue={hotelData.hotelRating}
+          ratingCount={5}
+          
+ 
+          // style={{ width:200 }}
+        />
         </View>
-        <Text style={styles.locationText}>{item.location}</Text>
-        <Text style={styles.reviewsText}>{item.reviews}</Text>
+      </View>
+      <View style={styles.locationContainer}>
+        <Icon name="location-on" size={20} color='#5392F9' />
+        <Text style={styles.location}></Text>
+      </View>
+   
+      <View style={styles.mealBoxNotIncluded}>
+      <Text style={styles.rating}>
+          {`5 / 5`}
+        </Text>
+        {/* <Text style={styles.reviews}>{`${hotelData.reviews} Reviews`}</Text> */}
+      </View>
+      {/* <View style={styles.amenities}>
+        {hotelData.amenities.map((amenity, index) => (
+          <Text key={index} style={styles.amenity}>{amenity}</Text>
+        ))}
+      </View> */}
+      <View style={styles.infoRow}>
+        <View style={hotelData.meal === 'nomeal' ? styles.mealBoxNotIncluded : styles.mealBoxIncluded}>
+          <Text style={styles.mealText}>
+            {hotelData.meal === 'nomeal' ? 'Breakfast not included' : 'Breakfast included'}
+          </Text>
+        </View>
+        <Text style={styles.price}></Text>
       </View>
     </View>
-    </TouchableOpacity>
+  </View>
+  
   );
+  const PlaceholderHotelItem = () => (
+    <View style={styles.container22}>
+      <Placeholder
+        Animation={Fade}
+        Left={() => <PlaceholderMedia style={styles.image} />}
+      >
+        <PlaceholderLine width={80} style={styles.namePlaceholder} />
+        <PlaceholderLine style={styles.ratingPlaceholder} />
+        <PlaceholderLine width={30} style={styles.locationPlaceholder} />
+        <PlaceholderLine style={styles.mealBoxPlaceholder} />
+        <PlaceholderLine style={styles.pricePlaceholder} />
+      </Placeholder>
+    </View>
+  );
+
+  const HotelItem = ({ hotelData }) => (
+    <View style={styles.container22}>
+     <Image source={{ uri: hotelData.hotelImage }} style={styles.image} /> 
+    <View style={styles.details}>
+    <View style={styles.header}>
+        <Text style={styles.name}>{hotelData.hotelName}</Text>
+        <View style={{ width: 100, justifyContent: 'flex-start' }}>
+
+        <Rating
+          imageSize={20}
+          readonly
+          startingValue={hotelData.hotelRating}
+          ratingCount={5}
+          
+ 
+          // style={{ width:200 }}
+        />
+        </View>
+      </View>
+      <View style={styles.locationContainer}>
+        <Icon name="location-on" size={20} color='#5392F9' />
+        <Text style={styles.location}>{hotelData.hotelAddress}</Text>
+      </View>
+   
+      <View style={styles.mealBoxNotIncluded}>
+      <Text style={styles.rating}>
+          {`${hotelData.hotelRating} / 5`}
+        </Text>
+        {/* <Text style={styles.reviews}>{`${hotelData.reviews} Reviews`}</Text> */}
+      </View>
+      {/* <View style={styles.amenities}>
+        {hotelData.amenities.map((amenity, index) => (
+          <Text key={index} style={styles.amenity}>{amenity}</Text>
+        ))}
+      </View> */}
+      <View style={styles.infoRow}>
+        <View style={hotelData.meal === 'nomeal' ? styles.mealBoxNotIncluded : styles.mealBoxIncluded}>
+          <Text style={styles.mealText}>
+            {hotelData.meal === 'nomeal' ? 'Breakfast not included' : 'Breakfast included'}
+          </Text>
+        </View>
+        <Text style={styles.price}>{`${hotelData.showCurrencyCode} ${hotelData.showAmount.toFixed(2)}`}</Text>
+      </View>
+    </View>
+  </View>
+  );
+  if (loading) {
+    return <ActivityIndicator size="large" />;
+  }
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#EAEBED' }}>
       {/* Status Bar */}
     
     
       <View style={styles.container1}>
-      <TextInput
+      <Text
         style={styles.searchBar}
-        placeholder="Search"
+        placeholder="Penang"
         // Add any additional search bar props or styling as needed
-      />
+      >Penang</Text>
 
       <Text style={styles.dateText}>
         Sat, 11 Nov - Tue, 14 Nov • 4 Guests
       </Text>
     </View>
       <View style={styles.container}>
-      <View style={styles.dropdownContainer}>
-      <DropDownPicker
-        open={open}
-        value={value}
-        items={items}
-        setOpen={setOpen}
-        setValue={setValue}
-        setItems={setItems}
-        style={styles.picker}
-
-        
-        
-        
-        // mode="BADGE"
-        // badgeDotColors={["#e76f51", "#00b4d8", "#e9c46a", "#e76f51", "#8ac926", "#00b4d8", "#e9c46a"]}
-      />
-      </View>
-
-      <View style={styles.dropdownContainer}>
-        <DropDownPicker
-         open={open}
-         value={value}
-         items={items}
-         setOpen={setOpen}
-         setValue={setValue}
-         setItems={setItems}
-         style={styles.picker}
-        />
-      </View>
-
-      <View style={styles.dropdownContainer}>
-        <DropDownPicker
-        open={open}
-        value={value}
-        items={items}
-        setOpen={setOpen}
-        setValue={setValue}
-        setItems={setItems}
-        style={styles.picker}
-        />
-      </View>
     
 
     </View>
+  
     <FlatList
-    style={{margin:30}}
-      data={data}
-      keyExtractor={(item) => item.id}
-      renderItem={renderItem}
-    />
+    data={hotelsData}
+    renderItem={({ item }) => <HotelItem hotelData={item} />}
+    keyExtractor={item => item}
+  />
       </SafeAreaView>
     
     
@@ -187,61 +263,128 @@ const styles = StyleSheet.create({
     backgroundColor: '000',
   },
 
+  
+
+  container22: {
+    width: '95%',
+    marginLeft:10,
+    backgroundColor: '#fff',
+    borderRadius: 6,
+    overflow: 'hidden',
+    elevation: 3, // for Android
+    shadowColor: '#000', // for iOS
+    shadowOffset: { width: 0, height: 2 }, // for iOS
+    shadowOpacity: 0.1, // for iOS
+    shadowRadius: 2, 
+    borderRadius:10,
+    marginBottom:16 ,
+    
+    // for iOS
+  },
+  image: {
+    borderTopLeftRadius: 10,
+  borderTopRightRadius: 10,
+    width: '100%',
+    height: 162, // Set a fixed height or make it dynamic
+  },
+  details: {
+    padding: 10,
+  },
+  name: {
+    marginTop: 5,
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  location: {
+    color: 'gray',
+    marginBottom: 5,
+  },
+  ratingReviews: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  rating: {
+    fontWeight: 'bold',
+    
+   
+  },
+  reviews: {
+    color: 'gray',
+  },
+  amenities: {
+    flexDirection: 'row',
+    marginBottom: 5,
+  },
+  amenity: {
+    marginRight: 10,
+    color: 'gray',
+  },
+  price: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: '#000',
+    marginBottom: 5,
+  },
   container1: {
     height: 100,
     padding: 16,
     backgroundColor: '#5392F9', // Set your desired background color
   },
-  searchBar: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 16,
-    paddingLeft: 10,
-    backgroundColor: 'white',
-  },
   dateText: {
     fontSize: 16,
     fontWeight: 'bold',
+    color:'white' ,
+    paddingLeft: 10,
   },
-
-  itemContainer: {
-    height: 200,
-    borderRadius: 10,
-    marginVertical: 10,
-    overflow: 'hidden',
+  searchBar: {
+    height: 40,
+    fontSize: 26,
+   
+    marginBottom: 5,
+    paddingLeft: 10,
+    color: 'white',
   },
-  image: {
-    flex: 1,
-    height: '100%',
-    resizeMode: 'cover',
+  header: {
+    flexDirection: 'row',
+   
+    justifyContent: 'space-between',
   },
-  infoContainer: {
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    padding: 10,
-    flex: 1,
-    justifyContent: 'flex-end',
+  locationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  headerContainer: {
+  location: {
+    marginLeft: 5, // Adjust the space between the icon and the text as needed
+    color: '#5392F9',
+  },
+  mealBoxIncluded: {
+    borderWidth: 1,
+    borderColor: '#ccc', // Adjust color as needed
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 2,
+    alignSelf: 'flex-start', // Align to the start of the text line
+  },
+  mealBoxNotIncluded: {
+    borderWidth: 1,
+    borderColor: '#ccc', // Adjust color as needed
+    backgroundColor: '#f8f8f8', // Slightly grey background to indicate 'not included'
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 2,
+    alignSelf: 'flex-start', // Align to the start of the text line
+  },
+  mealText: {
+    textAlign: 'center',
+    color: '#333', // Adjust text color as needed
+  },
+  infoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 5,
-  },
-  nameText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  starsText: {
-    color: 'white',
-  },
-  locationText: {
-    color: 'white',
-    fontSize: 14,
-  },
-  reviewsText: {
-    color: 'white',
-    fontSize: 14,
+    alignItems: 'center',
+    marginVertical: 5, // Adjust as needed
   },
 });
 
