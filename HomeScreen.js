@@ -407,7 +407,7 @@ const handleConfirm = (date) => {
   
       console.log(nameToShow, "kkkkkkk");
       setAutocompleteValue(nameToShow);
-  
+  setInputValue(nameToShow)
       setSelectedDestinations([...selectedDestinations, { name: nameToShow }]);
     }
   };
@@ -430,9 +430,10 @@ const handleConfirm = (date) => {
  //Alert.alert("idd",selectedThemedays1)
     // Your navigation logic here
     title="Go to Details"
-     navigation.navigate('hotel1', {
+     navigation.navigate('Details', {
       address: inputValue,
       day: selectedThemedays1,
+    //  date: selectedDate,
       date: selectedDate.toString(),
 id:'ffff'
 
@@ -554,40 +555,50 @@ id:'ffff'
     <View style={[styles.transportItem, { alignItems: 'center' }]}>
       <TouchableOpacity
         onPress={() => {
+          title="Go to Details"
+          navigation.navigate('hotel1', {
+           address: inputValue,
+           day: selectedThemedays1,
+         //  date: selectedDate,
+           date: selectedDate.toString(),
+     id:'ffff'
+     
+     
+        });
          
           //  const currentDate = selectedDate
-            const updatedDate = new Date(selectedDate.getTime());
-            const updatedDate1 = new Date(selectedDate.getTime());
-            updatedDate.setDate(updatedDate.getDate() +  1);
+            // const updatedDate = new Date(selectedDate.getTime());
+            // const updatedDate1 = new Date(selectedDate.getTime());
+            // updatedDate.setDate(updatedDate.getDate() +  1);
             
             // Format the date as "YYYY-MM-DD"s
-            const year = updatedDate1.getFullYear();
-            const month = String(updatedDate1.getMonth() + 1).padStart(2, '0');
-            const day = String(updatedDate1.getDate()).padStart(2, '0');
+            // const year = updatedDate1.getFullYear();
+            // const month = String(updatedDate1.getMonth() + 1).padStart(2, '0');
+            // const day = String(updatedDate1.getDate()).padStart(2, '0');
          
-            const year1 = updatedDate.getFullYear();
-            const month1 = String(updatedDate.getMonth() + 1).padStart(2, '0');
-            const day1 = String(updatedDate.getDate()).padStart(2, '0');
+            // const year1 = updatedDate.getFullYear();
+            // const month1 = String(updatedDate.getMonth() + 1).padStart(2, '0');
+            // const day1 = String(updatedDate.getDate()).padStart(2, '0');
          
-            const formattedDate1 = `${year}-${month}-${day}`;
-            const formattedDate2 = `${year1}-${month1}-${day1}`;
+            // const formattedDate1 = `${year}-${month}-${day}`;
+            // const formattedDate2 = `${year1}-${month1}-${day1}`;
 
-            var  urlmain  =""
-            const encodedCityName = encodeURIComponent(inputValue);
-            if (inputValue.trim() === '') {
+            // var  urlmain  =""
+            // const encodedCityName = encodeURIComponent(inputValue);
+            // if (inputValue.trim() === '') {
                
              
-             urlmain = `http://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fhotels/${encodeURIComponent("kuala Lumpur")}/${formattedDate1}/${formattedDate2}?sort=distance_a`;
+            //  urlmain = `http://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fhotels/${encodeURIComponent("kuala Lumpur")}/${formattedDate1}/${formattedDate2}?sort=distance_a`;
 
-             handleNavigate(urlmain);    
+            //  handleNavigate(urlmain);    
             
-            }
-                  else
-                  {
-                    urlmain = `http://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fhotels/${encodedCityName}/${formattedDate1}/${formattedDate2}?sort=distance_a`;
+            // }
+            //       else
+            //       {
+            //         urlmain = `http://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fhotels/${encodedCityName}/${formattedDate1}/${formattedDate2}?sort=distance_a`;
 
-                    handleNavigate(urlmain);
-                  }
+            //         handleNavigate(urlmain);
+            //       }
 
          
          //</View></View> handleNavigate(urlmain);

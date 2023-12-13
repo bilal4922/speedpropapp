@@ -500,26 +500,37 @@ onPress={() => {
                 <Text style={{ fontWeight: '300', fontSize: 14 ,marginTop:5 }}>
       <TouchableOpacity
            onPress={() => {
-            const currentDate = new Date(receivedData.date);
-            const updatedDate = new Date(currentDate.getTime());
-            const updatedDate1 = new Date(currentDate.getTime());
-            updatedDate.setDate(updatedDate.getDate() + item.day - 1);
+
+            title="Go to Details"
+            navigation.navigate('hotel1', {
+             address: address,
+            //  day: selectedThemedays1,
+           //  date: selectedDate,
+             date: date,
+       id:'ffff'
+       
+       
+          });
+            // const currentDate = new Date(receivedData.date);
+            // const updatedDate = new Date(currentDate.getTime());
+            // const updatedDate1 = new Date(currentDate.getTime());
+            // updatedDate.setDate(updatedDate.getDate() + item.day - 1);
             
             // Format the date as "YYYY-MM-DD"
-            const year = updatedDate1.getFullYear();
-            const month = String(updatedDate1.getMonth() + 1).padStart(2, '0');
-            const day = String(updatedDate1.getDate()).padStart(2, '0');
+            // const year = updatedDate1.getFullYear();
+            // const month = String(updatedDate1.getMonth() + 1).padStart(2, '0');
+            // const day = String(updatedDate1.getDate()).padStart(2, '0');
          
-            const year1 = updatedDate.getFullYear();
-            const month1 = String(updatedDate.getMonth() + 1).padStart(2, '0');
-            const day1 = String(updatedDate.getDate()).padStart(2, '0');
+            // const year1 = updatedDate.getFullYear();
+            // const month1 = String(updatedDate.getMonth() + 1).padStart(2, '0');
+            // const day1 = String(updatedDate.getDate()).padStart(2, '0');
          
-            const formattedDate1 = `${year}-${month}-${day}`;
-            const formattedDate2 = `${year1}-${month1}-${day1}`;
-            const encodedCityName = encodeURIComponent(receivedData.message);
+            // const formattedDate1 = `${year}-${month}-${day}`;
+            // const formattedDate2 = `${year1}-${month1}-${day1}`;
+            // const encodedCityName = encodeURIComponent(receivedData.message);
 
-            const urlmain = `http://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fhotels/${encodedCityName}/${formattedDate1}/${formattedDate2}?sort=distance_a`;
-            handleNavigate(urlmain);
+            // const urlmain = `http://kayak.com.my/in?a=kan_262812_573418&lc=en&url=%2Fhotels/${encodedCityName}/${formattedDate1}/${formattedDate2}?sort=distance_a`;
+            // handleNavigate(urlmain);
             // const urlmain = `https://www.viator.com/searchResults/all?pid=P00094549&mcid=42383&medium=link&text=${item.lunch}, ${receivedData.message}`;
             // handleNavigate(urlmain);
           }}

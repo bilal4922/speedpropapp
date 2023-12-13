@@ -5,8 +5,9 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import  Icon  from 'react-native-vector-icons/MaterialIcons';
 import { Placeholder, PlaceholderMedia, PlaceholderLine, Fade } from 'react-native-loading-placeholder';
-
-const HomeScreen = () => {
+import { fetchData } from './redux/actions';
+import AnimatedLoader from "react-native-animated-loader";
+const HomeScreen = ({ route }) => {
   const navigation = useNavigation();
  
  const [selectedFilter, setSelectedFilter] = useState(null);
@@ -14,6 +15,7 @@ const HomeScreen = () => {
   const [selectedSort, setSelectedSort] = useState(null);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [items, setItems] = useState([
     {label: 'Spain', value: 'spain'},
     {label: 'Madrid', value: 'madrid',},
@@ -27,8 +29,11 @@ const HomeScreen = () => {
 
   const screenWidth = Dimensions.get('window').width;
   const [hotelsData, setHotelsData] = useState([]);
+  const [page, setpage] = useState(2);
+  const [bookingref, setbookingref] = useState('');
   const [loading, setLoading] = useState(true);
-
+  const { address } = route.params;
+  const { date } = route.params;
   
   useEffect(() => {
 
@@ -58,16 +63,18 @@ const HomeScreen = () => {
   
         const json = await response.json();
         setHotelsData(json.elements);
+        setbookingref(json.searchReference)
       } catch (error) {
         console.error('Failed to fetch hotels:', error);
       } finally {
         setLoading(false);
+        setIsRefreshing(false);
       }
     };
   
     fetchData();
 
-    fetchData();
+   // fetchData();
 
     navigation.setOptions({
       headerLeft: () => (
@@ -79,7 +86,65 @@ const HomeScreen = () => {
     });
   }, [navigation]);
 
+  const fetchDatareference = async () => {
+    try {
+      const response = await fetch('https://halaltravel.ai/ht/api/v1/hotel/search/bySearchReference', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTBAZ21haWwuY29tIiwidXNlcklkIjoxLCJpYXQiOjE3MDIzNzEyNjYsImV4cCI6MTcwMjk3NjA2Nn0.AgpWEvXrt1Gx4AqQHk8JiqsNK7Tsg1W3KvRsAtrYc5RAJsrzTc-V8JsWMMAZ2Ky3DXFt3NrEapB3ZUkWecFy-g'
+          // Add any other headers required by the API
+        },
+        body: JSON.stringify({
+          "searchReference" : bookingref,
+        "language" : "en",
+         "pageNumber" :page
+        }),
+      });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const json = await response.json();
+      // setHotelsData(json.elements);
+      // if (page === 2) {
+      //   setHotelsData(json.elements);
+      // } else {
+        setHotelsData(prevHotels => [...prevHotels, ...json.elements]);
+     // }
+    } catch (error) {
+      console.error('Failed to fetch hotels:', error);
+    } finally {
+      setLoading(false);
+      setIsRefreshing(false);
+    }
+  };
+
+  const formatDate = (date) => {
+    const options = { weekday: 'short', day: 'numeric', month: 'short' };
+    // Format the date and the next day
+    const startDate = date.toLocaleDateString('en-US', options);
+    const endDate = new Date(date);
+    endDate.setDate(date.getDate() + 1);
+    const endDateFormatted = endDate.toLocaleDateString('en-US', options);
+
+    return `${startDate} - ${endDateFormatted}`;
+  };
+
+  const handleLoadMore = () => {
+    if (!loading) {
+      setpage(prevPage => prevPage + 1);
+      fetchDatareference(page + 1);
+    }
+  };
+
+  // Function to refresh the list (pull to refresh)
+  const handleRefresh = () => {
+  //  setIsRefreshing(true);
+  //  setPage(1);
+   // fetchData();
+  };
 
 
   // const hotelsData = [
@@ -207,7 +272,13 @@ const HomeScreen = () => {
   </View>
   );
   if (loading) {
-    return <ActivityIndicator size="large" />;
+    return (
+      <View style={styles.centered}>
+        {/* <ActivityIndicator size="large" /> */}
+        <ActivityIndicator size="large" color="#0000ff" />
+          <Text>Loading...</Text>
+      </View>
+    );
   }
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#EAEBED' }}>
@@ -219,10 +290,10 @@ const HomeScreen = () => {
         style={styles.searchBar}
         placeholder="Penang"
         // Add any additional search bar props or styling as needed
-      >Penang</Text>
+      >{address}</Text>
 
       <Text style={styles.dateText}>
-        Sat, 11 Nov - Tue, 14 Nov • 4 Guests
+      {formatDate(new Date(date))}• 2 Guests
       </Text>
     </View>
       <View style={styles.container}>
@@ -234,6 +305,10 @@ const HomeScreen = () => {
     data={hotelsData}
     renderItem={({ item }) => <HotelItem hotelData={item} />}
     keyExtractor={item => item}
+    onEndReached={handleLoadMore}
+    onEndReachedThreshold={0.5} // Load more when the user has scrolled 50% of the list
+    refreshing={isRefreshing}
+    onRefresh={handleRefresh}
   />
       </SafeAreaView>
     
@@ -385,6 +460,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical: 5, // Adjust as needed
+  },
+
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
