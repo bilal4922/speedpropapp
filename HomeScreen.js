@@ -556,7 +556,7 @@ id:'ffff'
       <TouchableOpacity
         onPress={() => {
           title="Go to Details"
-          navigation.navigate('hotel1', {
+          navigation.navigate('hotel2', {
            address: inputValue,
            day: selectedThemedays1,
          //  date: selectedDate,

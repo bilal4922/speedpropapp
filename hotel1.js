@@ -43,17 +43,24 @@ const HomeScreen = ({ route }) => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTBAZ21haWwuY29tIiwidXNlcklkIjoxLCJpYXQiOjE3MDIzNzEyNjYsImV4cCI6MTcwMjk3NjA2Nn0.AgpWEvXrt1Gx4AqQHk8JiqsNK7Tsg1W3KvRsAtrYc5RAJsrzTc-V8JsWMMAZ2Ky3DXFt3NrEapB3ZUkWecFy-g'
+            'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTBAZ21haWwuY29tIiwidXNlcklkIjoxLCJpYXQiOjE3MDI5Nzk2MzksImV4cCI6MTcwMzU4NDQzOX0.MaVaRiO5m_1IaXZyFkyvyVI_IxIalKvkVbHx_hVzrJMPcVeEkBvVe76tAwn0B1J0SNz6YjTVOQgzmWPbiW9TRA'
             // Add any other headers required by the API
           },
           body: JSON.stringify({
-            query: "Penang",
-            language: "en",
-            checkin: "2023-12-15",
-            checkout: "2023-12-17",
-            currency: "MYR",
-            adults: 2,
-            children: []
+            // query: address,
+            // language: "en",
+            // checkin: "2023-12-22",
+            // checkout: "2023-12-25",
+            // currency: "MYR",
+            // adults: 2,
+            // children: []
+            "query" : address,
+    "language" : "en",
+    "checkin": "2023-12-20",
+    "checkout": "2023-12-22",
+    "currency": "MYR",
+    "adults" : 2,
+    "children" : []
           }),
         });
   
@@ -92,7 +99,7 @@ const HomeScreen = ({ route }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTBAZ21haWwuY29tIiwidXNlcklkIjoxLCJpYXQiOjE3MDIzNzEyNjYsImV4cCI6MTcwMjk3NjA2Nn0.AgpWEvXrt1Gx4AqQHk8JiqsNK7Tsg1W3KvRsAtrYc5RAJsrzTc-V8JsWMMAZ2Ky3DXFt3NrEapB3ZUkWecFy-g'
+          'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTBAZ21haWwuY29tIiwidXNlcklkIjoxLCJpYXQiOjE3MDI5Nzk2MzksImV4cCI6MTcwMzU4NDQzOX0.MaVaRiO5m_1IaXZyFkyvyVI_IxIalKvkVbHx_hVzrJMPcVeEkBvVe76tAwn0B1J0SNz6YjTVOQgzmWPbiW9TRA'
           // Add any other headers required by the API
         },
         body: JSON.stringify({
@@ -226,6 +233,28 @@ const HomeScreen = ({ route }) => {
   );
 
   const HotelItem = ({ hotelData }) => (
+      <TouchableOpacity 
+      
+      
+      onPress={() => {
+
+        title="Go to Details"
+        navigation.navigate('hotel2', {
+         address: address,
+         hotelid:hotelData.hotelId,
+         hotelname:hotelData.hotelName,
+         hotelref:bookingref,
+        //  day: selectedThemedays1,
+       //  date: selectedDate,
+         date: date,
+   id:'ffff'
+   
+   
+      });
+       
+      }}
+      
+      >
     <View style={styles.container22}>
      <Image source={{ uri: hotelData.hotelImage }} style={styles.image} /> 
     <View style={styles.details}>
@@ -270,6 +299,9 @@ const HomeScreen = ({ route }) => {
       </View>
     </View>
   </View>
+     
+     
+</TouchableOpacity>
   );
   if (loading) {
     return (
