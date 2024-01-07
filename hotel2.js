@@ -5,6 +5,7 @@ import { Rating } from 'react-native-ratings';
 import {SliderBox} from 'react-native-image-slider-box';
 import { ScrollView } from 'react-native-gesture-handler';
 
+import  Icon  from 'react-native-vector-icons/MaterialIcons';
 
 const HomeScreen = ({ route }) => {
   const hotelData = {
@@ -51,7 +52,7 @@ const HomeScreen = ({ route }) => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTBAZ21haWwuY29tIiwidXNlcklkIjoxLCJpYXQiOjE3MDI5Nzk2MzksImV4cCI6MTcwMzU4NDQzOX0.MaVaRiO5m_1IaXZyFkyvyVI_IxIalKvkVbHx_hVzrJMPcVeEkBvVe76tAwn0B1J0SNz6YjTVOQgzmWPbiW9TRA'
+            'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTAwQGdtYWlsLmNvbSIsInVzZXJJZCI6NDUsImlhdCI6MTcwMzI2NTA5NywiZXhwIjoxNzAzODY5ODk3fQ.uJUkIqzLZ5Aos_g5ww0rkN5iA6X-GOfMOmbRACbHjhJ36SDZpbZVNJ2xY4lhrr8L_gJKrpQiCdfhQeiN7gp1uA'
             // Add any other headers required by the API
           },
           body: JSON.stringify({
@@ -88,13 +89,21 @@ const HomeScreen = ({ route }) => {
     fetchData();
     navigation.setOptions({
       headerLeft: () => (
-        <Button
-          onPress={() => navigation.goBack()}
-          title="Back"
-          color="#007AFF"
-        />
+        <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 10 }}>
+        <Icon name="arrow-back" size={25} color="#007AFF" />
+      </TouchableOpacity>
       ),
+      headerTitle: '',
     });
+    // navigation.setOptions({
+    //   headerLeft: () => (
+    //     <Button
+    //       onPress={() => navigation.goBack()}
+    //       title="Back"
+    //       color="#007AFF"
+    //     />
+    //   ),
+    // });
   }, [navigation]);
 
 

@@ -43,7 +43,7 @@ const HomeScreen = ({ route }) => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTBAZ21haWwuY29tIiwidXNlcklkIjoxLCJpYXQiOjE3MDI5Nzk2MzksImV4cCI6MTcwMzU4NDQzOX0.MaVaRiO5m_1IaXZyFkyvyVI_IxIalKvkVbHx_hVzrJMPcVeEkBvVe76tAwn0B1J0SNz6YjTVOQgzmWPbiW9TRA'
+            'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTAwQGdtYWlsLmNvbSIsInVzZXJJZCI6NDUsImlhdCI6MTcwMzI2NTA5NywiZXhwIjoxNzAzODY5ODk3fQ.uJUkIqzLZ5Aos_g5ww0rkN5iA6X-GOfMOmbRACbHjhJ36SDZpbZVNJ2xY4lhrr8L_gJKrpQiCdfhQeiN7gp1uA'
             // Add any other headers required by the API
           },
           body: JSON.stringify({
@@ -56,8 +56,8 @@ const HomeScreen = ({ route }) => {
             // children: []
             "query" : address,
     "language" : "en",
-    "checkin": "2023-12-20",
-    "checkout": "2023-12-22",
+    "checkin": "2023-12-24",
+    "checkout": "2023-12-25",
     "currency": "MYR",
     "adults" : 2,
     "children" : []
@@ -99,7 +99,7 @@ const HomeScreen = ({ route }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTBAZ21haWwuY29tIiwidXNlcklkIjoxLCJpYXQiOjE3MDI5Nzk2MzksImV4cCI6MTcwMzU4NDQzOX0.MaVaRiO5m_1IaXZyFkyvyVI_IxIalKvkVbHx_hVzrJMPcVeEkBvVe76tAwn0B1J0SNz6YjTVOQgzmWPbiW9TRA'
+          'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTAwQGdtYWlsLmNvbSIsInVzZXJJZCI6NDUsImlhdCI6MTcwMzI2NTA5NywiZXhwIjoxNzAzODY5ODk3fQ.uJUkIqzLZ5Aos_g5ww0rkN5iA6X-GOfMOmbRACbHjhJ36SDZpbZVNJ2xY4lhrr8L_gJKrpQiCdfhQeiN7gp1uA'
           // Add any other headers required by the API
         },
         body: JSON.stringify({
