@@ -12,6 +12,8 @@ import signup from './signup';
 import hotel1 from './hotel1';
 import hotel2 from './hotel2';
 import hotel3 from './hotel3';
+import bus from './bus';
+import bus1 from './bus1';
 import HomeScreen from './HomeScreen';
 import ProfileScreen from './ProfileScreen';
  import SettingsScreen from './SettingsScreen';
@@ -28,6 +30,8 @@ const App = () => {
         <Stack.Screen name="hotel1" component={hotel1} />
         <Stack.Screen name="hotel2" component={hotel2} />
         <Stack.Screen name="hotel3" component={hotel3} />
+        <Stack.Screen name="bus" component={bus} />
+        <Stack.Screen name="bus1" component={bus1} />
 
         <Stack.Screen name="web" component={web} />
         <Stack.Screen name="web1" component={web1} />

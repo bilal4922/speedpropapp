@@ -668,8 +668,14 @@ id:'ffff'
     <View style={[styles.transportItem, { alignItems: 'center' }]}>
       <TouchableOpacity
         onPress={() => {
-          const urlmain = 'https://gohub.com.my';
-          handleNavigate(urlmain);
+          // const urlmain = 'https://gohub.com.my';
+          // handleNavigate(urlmain);
+          navigation.navigate('bus', {
+            address: "inputValue",
+          
+      
+      
+         });
 
         }}
         style={{ alignItems: 'center' }}
