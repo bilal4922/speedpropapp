@@ -7,7 +7,9 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-   ActivityIndicator
+   ActivityIndicator,
+   ImageBackground
+
 } from 'react-native';
 import {
   Padding,
@@ -16,12 +18,18 @@ import {
   FontSize,
   FontFamily,
 } from "./GlobalStylessignin";
+import  Icon  from 'react-native-vector-icons/MaterialIcons';
+
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'; // Import FontAwesome library
 
 const BusSearchScreen = ({ navigation }) => {
   const [originList, setOriginList] = useState([]);
   const [selectedOrigin, setSelectedOrigin] = useState('');
+  const [selectedOrigincode, setSelectedOrigincode] = useState('');
+  const [selecteddes, setSelectedes] = useState('');
+  const [selectedescode, setSelecteddescode] = useState('');
+  var originCode =''
   const [destination, setDestination] = useState('');
  // const [departureDate, setDepartureDate] = useState('');
  // const [returnDate, setReturnDate] = useState('');
@@ -32,14 +40,18 @@ const BusSearchScreen = ({ navigation }) => {
   const [filteredOrigins1, setFilteredOrigins1] = useState([]);
   const [loading, setLoading] = useState(true);
   const [inputValue, setInputValue] = useState('');
+  const [ref, setref] = useState('');
   const [inputValue1, setInputValue1] = useState('');
   const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTAwMDBAZ21haWwuY29tIiwidXNlcklkIjo0OCwiaWF0IjoxNzA0NjQ3NzY2LCJleHAiOjE3MDUyNTI1NjZ9.wDTuw3E-PHKfFEtz4Ns4_PlZzOOoDqFwPWLFTTh2fxCR-AKljXJL8JJXU6LBUqrdnjOu7syuxAcIJO3to9wEiA';
 
   const [departureDate, setDepartureDate] = useState(new Date().toISOString().split('T')[0]);
   const [returnDate, setReturnDate] = useState(new Date().toISOString().split('T')[0]);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDater, setSelectedDater] = useState(new Date());
 const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
   useEffect(() => {
+    
 
     setLoading(true);
     // Define the request payload
@@ -65,7 +77,15 @@ const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
       })
       .catch(error => console.error('Error fetching origin data:', error));
-  }, []);
+      navigation.setOptions({
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 10 }}>
+          <Icon name="arrow-back" size={25} color="#007AFF" />
+        </TouchableOpacity>
+        ),
+        headerTitle: '',
+      });
+    }, [navigation]);
   const fetchDestinationList = async () => {
     try {
       const response = await fetch('https://halaltravel.ai/ht/api/v1/bus/search/destination', {
@@ -76,14 +96,14 @@ const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
         },
         body: JSON.stringify({
          // originCode,
-          originCode : "PJS",
+          originCode : originCode,
           originType: 'terminal',
-          destination: 'Kerteh',
+          destination: '',
         }),
       });
 
       const result = await response.json();
-      console.log("aaaaa", result);
+      console.log("aaaaap", result,originCode);
 
       // if (result.status) {
         setDestinationList(result);
@@ -114,6 +134,7 @@ const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
       const result = await response.json();
       console.log("pppp", result.busBookingReferenceNo);
+      setref(result.busBookingReferenceNo)
 
       // if (result.status) {
       //  setDestinationList(result);
@@ -182,18 +203,50 @@ const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
 
   const handleOriginSelect11 = (origin) => {
-    setSelectedOrigin(origin);
-    setInputValue1(origin)
+   // setSelectedOrigin(origin);
+    
+    setSelecteddescode(origin.mdTerminalCodeTo)
+    setSelectedes(origin.mdTerminalNameTo)
+    setInputValue1(`${origin.mdTerminalNameTo} (${origin.mdTerminalCodeTo})`)
     setShowdestinationList(false)
    // fetchDestinationList()
   };
 
   const renderCityItem1 = ({ item }) => (
-    <TouchableOpacity onPress={() => handleOriginSelect1(item.mdCityNameFrom)}>
-      <Text style={{ marginLeft: 20 }}>{item.mdCityNameFrom}</Text>
-    </TouchableOpacity>
+    <View >
+    <FlatList
+      data={item.terminalList}
+      keyExtractor={(terminal, index) => index.toString()}
+      renderItem={({ item: terminal, index }) => (
+        <TouchableOpacity onPress={() => handleTerminalSelect(terminal)}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={styles.cityContainer}>
+            <View style={styles.circle} />
+            <Text style={{ color: '#4F4F4F', marginLeft: 10 }}>
+              {` ${terminal.mdTerminalNameFrom} (${terminal.mdTerminalCodeFrom})`}
+            </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+      )}
+    />
+  </View>
+  
+  
+  
   );
 
+  const handleTerminalSelect = (terminal) => {
+    // Your logic to handle the selected terminal
+    console.log(`Selected Terminal: ${terminal.mdTerminalNameFrom} (${terminal.mdTerminalCodeFrom})`);
+
+    setSelectedOrigin(terminal.mdTerminalNameFrom);
+    setSelectedOrigincode(terminal.mdTerminalCodeFrom);
+   originCode = terminal.mdTerminalCodeFrom;
+    setInputValue(`${terminal.mdTerminalNameFrom} (${terminal.mdTerminalCodeFrom})`)
+    setShowOriginList(false)
+   fetchDestinationList()
+  };
   // const renderDestinationItem1 = ({ item }) => (
   //   <TouchableOpacity onPress={() => /* handle destination selection */}>
   //     <Text>{item.mdTerminalNameTo}</Text>
@@ -241,15 +294,33 @@ const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
   };
+
+  
   
   const handleConfirm = (date) => {
     setSelectedDate(date);
     hideDatePicker();
   };
   
+  const formatDate = (date) => {
+    const day = date.getDate();
+    const month = date.toLocaleString('default', { month: 'short' });
+    const year = date.getFullYear();
+  
+    return `${day}${month}${year}`;
+  };
+  
   return (
+    <ImageBackground
+    source={require("./assets/busbackgroud.jpg")} // Change path to your image
+    style={styles.backgroundImage}
+  >
+
     <View style={styles.container}>
-      <Text style={styles.title}>Express Bus</Text>
+    <View style={styles.container11}>
+    <View style={styles.titleContainer}>
+  <Text style={styles.titleText}>Express Bus</Text>
+</View>
       <View style={styles.inputContainer}>
         {/* <TouchableOpacity onPress={handleSelectedOriginPress}> */}
 
@@ -257,28 +328,28 @@ const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
 
         <TextInput
-       
+        placeholderTextColor="#27267d"
        style={styles.textInput}
-        placeholder="Search Origins"
+        placeholder="Enter Origin"
         value={inputValue}
         onChangeText={filterOrigins1}
       />
       
       {showOriginList && (
   loading ? (
-    <ActivityIndicator size="large" color="#ffb116" />
+    <ActivityIndicator size="small" color="#55B9B9" />
   ) : (
     <FlatList
       data={filteredOrigins}
       keyExtractor={(item) => item.mdStateCodeFrom}
       renderItem={({ item }) => (
 
-        <View style={[styles.stateContainer, { marginBottom: 20 }]}>
+        <View style={[styles.stateContainer, { marginBottom: 0 }]}>
         {/* <TouchableOpacity onPress={() => handleOriginSelect1(item.mdStateNameFrom)}> */}
 
           <View style={styles.container2}>
-      <View style={styles.circle} />
-      <Text style={{ fontSize: 16, fontWeight: 'bold', marginLeft: 8 }}>{item.mdStateNameFrom}</Text>
+      {/* <View style={styles.circle} /> */}
+      <Text style={{ color:'#4F4F4F',fontSize: 16, fontWeight: 'bold', marginLeft: 10 }}>{item.mdStateNameFrom}</Text>
     </View>         
           <FlatList
             data={item.cityList}
@@ -291,11 +362,12 @@ const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   )
 )}
 
+<View style={{marginBottom:20}}></View>
        
         {/* </TouchableOpacity> */}
         <TextInput
-          style={styles.textInput}
-          
+          style={styles.textInput22}
+          placeholderTextColor="#27267d"
           placeholder="Enter Destination"
           value={inputValue1}
         onChangeText={filterdestination}
@@ -303,15 +375,21 @@ const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
 {showdestinationList && (
   loading ? (
-    <ActivityIndicator size="large" color="#ffb116" />
+    <ActivityIndicator size="small" color="#55B9B9" />
   ) : (
     <FlatList
       data={filteredOrigins1}
       keyExtractor={(item) => item.mdStateCodeFrom}
       renderItem={({ item }) => (
         <View style={styles.stateContainer}>
-          <TouchableOpacity onPress={() => handleOriginSelect11(item.mdTerminalNameTo)}>
-            <Text >{item.mdTerminalNameTo}</Text>
+          <TouchableOpacity onPress={() => handleOriginSelect11(item)}>
+            {/* <Text >{item.mdTerminalNameTo}</Text> */}
+            <View style={styles.cityContainer}>
+            <View style={styles.circle} />
+            <Text style={{ color: '#4F4F4F', marginLeft: 10 }}>
+              {` ${item.mdTerminalNameTo} (${item.mdTerminalCodeTo})`}
+            </Text>
+            </View>
           </TouchableOpacity>
          
         </View>
@@ -334,36 +412,56 @@ const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
           onChangeText={setDepartureDate}
         /> */}
 
-<Text
-              placeholder="Date (DD/MM/YYYY)"
-              placeholderTextColor="#27267d"
-              
-              onPress={showDatePicker}
-              style={styles.textInput}
-            >{selectedDate.toLocaleDateString()}
-            
-            </Text>
+
+            <Text
+  placeholder="Date (DD/MM/YYYY)"
+  placeholderTextColor="#27267d"
+  onPress={showDatePicker}
+  style={styles.textInput1}
+>
+  {formatDate(selectedDate)}
+</Text>
  <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode="date"
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
       />
-        {/* <TextInput
-          style={styles.textInput}
-          placeholder="Return Date (Optional)"
-          value={returnDate}
-          onChangeText={setReturnDate}
-        /> */}
+
+<View style={{marginBottom:10}}></View>
+{/* <TextInput
+  placeholder="Return Date (Optional)"
+  placeholderTextColor="#27267d"
+  onPress={() => showDatePicker(selectedDater, handleDateSelectr)}
+  style={styles.textInput1}
+>
+  {formatDate(selectedDater)}
+</TextInput> */}
+
+
       </View>
       <TouchableOpacity style={styles.button} onPress={() => 
         {
-        navigation.navigate("bus1");
+          if (ref) {
+            // If ref is not empty, navigate to 'bus1' with parameters
+            navigation.navigate('bus1', { oname: selectedOrigin, ocode: selectedOrigincode, dname: selecteddes, dcode: selectedescode, date: formatDate(selectedDate), ref: ref });
+          } else {
+            // Handle the case when ref is empty, e.g., show an alert or log a message
+            console.log('Ref is empty. Cannot navigate.');
+          }
+        
+       // navigation.navigate("bus1");
+
+       //</View> navigation.navigate('bus1', { oname: selectedOrigin, ocode: selectedOrigincode,dname: selecteddes, dcode: selectedescode,date: selectedDate,ref:ref });
+      
+    
         console.log('Searching for buses')}}>
       <Text style={styles.buttonText}>Search</Text>
     </TouchableOpacity>
+    </View>
       {/* <Button title="Search" onPress={() => console.log('Searching for buses')} style={styles.button} /> */}
     </View>
+    </ImageBackground>
   );
 };
 
@@ -371,38 +469,101 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    
+   // backgroundColor: '#fff',
+  },
+  container11: {
+    borderRadius:20,
+    
+    
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+   // backgroundColor: '#fff',
   },
   title: {
-    fontSize: 24,
+    marginBottom: 10,
+    backgroundColor: '#000',
+    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 20,
+    padding: 10,
+    width: '100%',
+    height: 50,
+    color: '#fff',
+    borderRadius: 20,
+   // borderTopLeftRadius: 20,
+   // borderTopRightRadius: 20,
+
+  },
+  titleContainer: {
+    marginBottom: 10,
+    backgroundColor: '#000',
+    width: '100%',
+   borderTopLeftRadius: 20,
+   borderTopRightRadius: 20,
+    overflow: 'hidden', // This is important to ensure the border radius is applied correctly
+  },
+  
+  titleText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    padding: 10,
+    height: 50,
+    color: '#fff',
   },
   inputContainer: {
+    margin:20,
     flexDirection: 'column',
-    marginBottom: 20,
+    
+  
+    color: '#000' 
   },
   dateInputContainer: {
+
+    marginTop:0,
+    marginLeft:20,
+    marginRight:20,
     flexDirection: 'column',
   },
   textInput: {
-    borderWidth: 1,
+    backgroundColor: '#fff',
+    borderWidth: 0,
     borderColor: '#ccc',
     padding: 10,
     fontSize: 16,
-    marginBottom: 10,
-    borderRadius:10,
+    // marginBottom: 24,  // Add marginBottom for spacing below the text input
+    borderRadius: 0,
   },
-  button: {
+  textInput22: {
+    backgroundColor: '#fff',
+    borderWidth: 0,
+    borderColor: '#ccc',
     padding: 10,
     fontSize: 16,
-    backgroundColor: Color.colorOrange,
-    borderRadius: Border.br_3xs,
-    width: '95%',
-    marginTop: 10,
-    marginLeft: 10,
-    height:40 ,
+    marginBottom: 0,  // Add marginBottom for spacing below the text input
+    borderRadius: 0,
+  },
+
+  textInput1: {
+    backgroundColor: '#fff',
+    borderWidth: 0,
+    borderColor: '#ccc',
+    padding: 10,
+    fontSize: 16,
+    // Add marginBottom for spacing below the text input
+    borderRadius: 0,
+  },
+  button: {
+    
+    fontSize: 16,
+    backgroundColor: '#55B9B9',
+    borderRadius: 0,
+    width: '90%',
+    marginTop: 16,
+    marginLeft: 20,
+    height:42 ,
+    marginBottom: 20,
+
     alignItems: 'center', // Center text horizontally
     justifyContent: 'center', // Center text vertically
   },
@@ -428,16 +589,39 @@ const styles = StyleSheet.create({
     fontSize: FontSize.size_sm,
     textAlign: "left",
   },
+  stateContainer:{
+    backgroundColor:'#FFFFFF',
+  },
   container2: {
     flexDirection: 'row',
     alignItems: 'center',
+   backgroundColor:'#FFFFFF',
   },
   circle: {
-    width: 10,
-    height: 10,
+    width: 8,
+    height: 8,
     borderRadius: 5,
-    backgroundColor: '#000', // Set your desired circle color
+    marginLeft:10,
+    backgroundColor: '#55B9B9', // Set your desired circle color
   },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'center', // or 'stretch' for a different effect
+    justifyContent: 'center',
+  },
+  cityContainer: {
+    flexDirection: 'row', // Align children horizontally
+    alignItems: 'center', // Center children vertically
+    backgroundColor: '#E8E8E8', // Light gray background color
+    borderRadius: 20, // Border radius of 6
+    height: 35, // Height of 35
+    paddingLeft: 10, // Add padding if needed
+    marginLeft:20,
+    marginRight:20,
+    marginBottom:10,
+  },
+
+
 });
 
 export default BusSearchScreen;
