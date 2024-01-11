@@ -9,8 +9,17 @@ import {
   TouchableOpacity,
    ActivityIndicator
 } from 'react-native';
+import {
+  Padding,
+  Color,
+  Border,
+  FontSize,
+  FontFamily,
+} from "./GlobalStylessignin";
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'; // Import FontAwesome library
 
-const BusSearchScreen = () => {
+const BusSearchScreen = ({ navigation }) => {
   const [originList, setOriginList] = useState([]);
   const [selectedOrigin, setSelectedOrigin] = useState('');
   const [destination, setDestination] = useState('');
@@ -28,6 +37,8 @@ const BusSearchScreen = () => {
 
   const [departureDate, setDepartureDate] = useState(new Date().toISOString().split('T')[0]);
   const [returnDate, setReturnDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   useEffect(() => {
 
     setLoading(true);
@@ -223,6 +234,18 @@ const BusSearchScreen = () => {
     setFilteredOrigins(sortedData);
   };
 
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+  
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+  
+  const handleConfirm = (date) => {
+    setSelectedDate(date);
+    hideDatePicker();
+  };
   
   return (
     <View style={styles.container}>
@@ -230,8 +253,12 @@ const BusSearchScreen = () => {
       <View style={styles.inputContainer}>
         {/* <TouchableOpacity onPress={handleSelectedOriginPress}> */}
 
+
+
+
         <TextInput
-        style={styles.textInput}
+       
+       style={styles.textInput}
         placeholder="Search Origins"
         value={inputValue}
         onChangeText={filterOrigins1}
@@ -239,16 +266,20 @@ const BusSearchScreen = () => {
       
       {showOriginList && (
   loading ? (
-    <ActivityIndicator size="large" color="#0000ff" />
+    <ActivityIndicator size="large" color="#ffb116" />
   ) : (
     <FlatList
       data={filteredOrigins}
       keyExtractor={(item) => item.mdStateCodeFrom}
       renderItem={({ item }) => (
-        <View style={styles.stateContainer}>
-          <TouchableOpacity onPress={() => handleOriginSelect1(item.mdStateNameFrom)}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{item.mdStateNameFrom}</Text>
-          </TouchableOpacity>
+
+        <View style={[styles.stateContainer, { marginBottom: 20 }]}>
+        {/* <TouchableOpacity onPress={() => handleOriginSelect1(item.mdStateNameFrom)}> */}
+
+          <View style={styles.container2}>
+      <View style={styles.circle} />
+      <Text style={{ fontSize: 16, fontWeight: 'bold', marginLeft: 8 }}>{item.mdStateNameFrom}</Text>
+    </View>         
           <FlatList
             data={item.cityList}
             keyExtractor={(city) => city.mdCityCodeFrom}
@@ -264,6 +295,7 @@ const BusSearchScreen = () => {
         {/* </TouchableOpacity> */}
         <TextInput
           style={styles.textInput}
+          
           placeholder="Enter Destination"
           value={inputValue1}
         onChangeText={filterdestination}
@@ -271,7 +303,7 @@ const BusSearchScreen = () => {
 
 {showdestinationList && (
   loading ? (
-    <ActivityIndicator size="large" color="#0000ff" />
+    <ActivityIndicator size="large" color="#ffb116" />
   ) : (
     <FlatList
       data={filteredOrigins1}
@@ -295,20 +327,42 @@ const BusSearchScreen = () => {
 
       
       <View style={styles.dateInputContainer}>
-        <TextInput
+        {/* <TextInput
           style={styles.textInput}
           placeholder="Departure Date"
           value={departureDate}
           onChangeText={setDepartureDate}
-        />
-        <TextInput
+        /> */}
+
+<Text
+              placeholder="Date (DD/MM/YYYY)"
+              placeholderTextColor="#27267d"
+              
+              onPress={showDatePicker}
+              style={styles.textInput}
+            >{selectedDate.toLocaleDateString()}
+            
+            </Text>
+ <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode="date"
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
+      />
+        {/* <TextInput
           style={styles.textInput}
           placeholder="Return Date (Optional)"
           value={returnDate}
           onChangeText={setReturnDate}
-        />
+        /> */}
       </View>
-      <Button title="Search" onPress={() => console.log('Searching for buses...')} style={styles.button} />
+      <TouchableOpacity style={styles.button} onPress={() => 
+        {
+        navigation.navigate("bus1");
+        console.log('Searching for buses')}}>
+      <Text style={styles.buttonText}>Search</Text>
+    </TouchableOpacity>
+      {/* <Button title="Search" onPress={() => console.log('Searching for buses')} style={styles.button} /> */}
     </View>
   );
 };
@@ -338,17 +392,51 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 16,
     marginBottom: 10,
+    borderRadius:10,
   },
   button: {
-    backgroundColor: '#007bff',
-    color: '#fff',
     padding: 10,
+    fontSize: 16,
+    backgroundColor: Color.colorOrange,
+    borderRadius: Border.br_3xs,
+    width: '95%',
+    marginTop: 10,
+    marginLeft: 10,
+    height:40 ,
+    alignItems: 'center', // Center text horizontally
+    justifyContent: 'center', // Center text vertically
+  },
+  buttonText: {
+    color: 'white', // Set your desired text color
     fontSize: 16,
   },
   originItem: {
     fontSize: 16,
     marginBottom: 5,
     marginLeft: 10,
+  },
+  email: {
+    fontFamily: FontFamily.montserratRegular,
+    color: Color.colorDarkslateblue_300,
+   
+    height: 20,
+
+  
+   
+  },
+  emailTypo: {
+    fontSize: FontSize.size_sm,
+    textAlign: "left",
+  },
+  container2: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  circle: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#000', // Set your desired circle color
   },
 });
 
