@@ -184,7 +184,7 @@ console.log(dateObject); // This will log the Date object to the console
       <View
   style={{
     
-    height:60 ,
+    height:10 ,
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
@@ -194,15 +194,15 @@ console.log(dateObject); // This will log the Date object to the console
 >
   <TouchableOpacity
     style={{
-      borderColor: '#192579',
-      borderWidth: 1,
+      // borderColor: '#192579',
+      // borderWidth: 1,
       borderRadius: 10,
       padding: 10,
     }}
     onPress={() => openModal()} // You can use openModal directly here
   >
     <Text style={{ fontWeight: 'bold', fontSize: 16 }}>
-      Save Plan
+      {/* Save Plan */}
     </Text>
   </TouchableOpacity>
 </View>
@@ -229,7 +229,7 @@ console.log(dateObject); // This will log the Date object to the console
           renderItem={({ item }) => (
             <View style={{flex:1}}>
               <View style={{alignItems:'center'}}>
-                <Text style={styles.dayText}>Day {item.day}</Text>
+               <Text style={styles.dayText}>Day {item.day}</Text>
                 {(() => {
                  
                  const currentDate = new Date(receivedData.date);

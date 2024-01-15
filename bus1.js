@@ -16,9 +16,16 @@ import {
 } from 'react-native';
 import { WebView } from 'react-native-webview';
 
+
 const MyWebView =  ({ route,navigation }) => {
 
-  const { oname, ocode, dname, dcode, date, ref } = route.params;
+  const { oname, ocode, dname, dcode, date, ref,date1} = route.params;
+
+  const [loading, setLoading] = useState(true);
+
+  const handleLoad = () => {
+    setLoading(false);
+  };
 
   useEffect(() => {
     // Check if 'ref' is not empty and log it
@@ -43,7 +50,7 @@ const MyWebView =  ({ route,navigation }) => {
     DateFrom: date,
     
     AffCode: 'gohub',
-   DateTo: '', // Add the actual value if needed
+   DateTo: date1, // Add the actual value if needed
     UserDialCode: '+60',
     UserEmailAddress: 'bilal.muhammad4922@gmail.com',
     UserGender: 'false',
@@ -86,13 +93,44 @@ const MyWebView =  ({ route,navigation }) => {
 
 
   return (
+     <View style={styles.container}>
+      {loading && (
+        <ActivityIndicator
+        style={styles.activityIndicator}
+          size="large"
+          color="#007AFF"
+        />
+      )}
     <WebView
+      // originWhitelist={['*']}
+      // source={{ html: formHtml }}
+      // javaScriptEnabled={true}
+      // domStorageEnabled={true}
+      // onLoad={handleLoad}
       originWhitelist={['*']}
       source={{ html: formHtml }}
       javaScriptEnabled={true}
       domStorageEnabled={true}
+      onLoad={handleLoad}
+      onError={(syntheticEvent) => console.log('WebView error: ', syntheticEvent.nativeEvent)}
     />
+    </View>
   );
 };
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  activityIndicator: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)', // Optional: Add a semi-transparent background
+  },
+});
 
 export default MyWebView;

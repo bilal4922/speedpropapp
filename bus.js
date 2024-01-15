@@ -10,6 +10,7 @@ import {
    ActivityIndicator,
    ImageBackground
 
+
 } from 'react-native';
 import {
   Padding,
@@ -20,8 +21,9 @@ import {
 } from "./GlobalStylessignin";
 import  Icon  from 'react-native-vector-icons/MaterialIcons';
 
+
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'; // Import FontAwesome library
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome library
 
 const BusSearchScreen = ({ navigation }) => {
   const [originList, setOriginList] = useState([]);
@@ -42,13 +44,16 @@ const BusSearchScreen = ({ navigation }) => {
   const [inputValue, setInputValue] = useState('');
   const [ref, setref] = useState('');
   const [inputValue1, setInputValue1] = useState('');
-  const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTAwMDBAZ21haWwuY29tIiwidXNlcklkIjo0OCwiaWF0IjoxNzA0NjQ3NzY2LCJleHAiOjE3MDUyNTI1NjZ9.wDTuw3E-PHKfFEtz4Ns4_PlZzOOoDqFwPWLFTTh2fxCR-AKljXJL8JJXU6LBUqrdnjOu7syuxAcIJO3to9wEiA';
+  const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTAwQGdtYWlsLmNvbSIsInVzZXJJZCI6NDUsImlhdCI6MTcwNTM1MTY0MywiZXhwIjoxNzA1OTU2NDQzfQ.-bQDpD1vHHcIrYdZi9adix0I6o0zCasW7NlgufmtqTtaUT9LVR7F4mvUa-mBX6ycE-Jyp5cXSgRuVK1DE___0Q';
 
   const [departureDate, setDepartureDate] = useState(new Date().toISOString().split('T')[0]);
   const [returnDate, setReturnDate] = useState(new Date().toISOString().split('T')[0]);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedDater, setSelectedDater] = useState(new Date());
+  const [selectedDater, setSelectedDater] = useState(null);
 const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+const [isDatePickerVisible1, setDatePickerVisibility1] = useState(false);
+const [isDatePickerVisible2, setDatePickerVisibility2] = useState(false);
 
   useEffect(() => {
     
@@ -288,18 +293,41 @@ const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   };
 
   const showDatePicker = () => {
+  setDatePickerVisibility1(true);
     setDatePickerVisibility(true);
   };
   
   const hideDatePicker = () => {
+   
     setDatePickerVisibility(false);
+    setDatePickerVisibility1(false);
+  };
+
+  const showDatePickerr = () => {
+
+   
+    setDatePickerVisibility(true);
+    setDatePickerVisibility2(true);
+  };
+  
+  const hideDatePickerr = () => {
+    setDatePickerVisibility(false);
+    setDatePickerVisibility2(false);
   };
 
   
   
   const handleConfirm = (date) => {
-    setSelectedDate(date);
-    hideDatePicker();
+    if(isDatePickerVisible1){
+      setSelectedDate(date);
+      hideDatePicker();
+    }
+
+    if(isDatePickerVisible2){
+      setSelectedDater(date);
+      hideDatePickerr();
+    }
+    
   };
   
   const formatDate = (date) => {
@@ -312,28 +340,34 @@ const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   
   return (
     <ImageBackground
-    source={require("./assets/busbackgroud.jpg")} // Change path to your image
+   // source={require("./assets/busbackgroud.jpg")} // Change path to your image
     style={styles.backgroundImage}
   >
 
     <View style={styles.container}>
+    <Text style={styles.titleText1}>Book Your Trip for a Seamless Journey!</Text>
     <View style={styles.container11}>
+    
     <View style={styles.titleContainer}>
   <Text style={styles.titleText}>Express Bus</Text>
+  <View style={{height:1,backgroundColor:'#ccc',width:'95%',justifyContent:'centers',marginLeft:10}}></View>
 </View>
       <View style={styles.inputContainer}>
         {/* <TouchableOpacity onPress={handleSelectedOriginPress}> */}
 
 
+        <Text style={styles.titleText2}>Origin</Text>
 
-
-        <TextInput
-        placeholderTextColor="#27267d"
-       style={styles.textInput}
-        placeholder="Enter Origin"
-        value={inputValue}
-        onChangeText={filterOrigins1}
-      />
+        <View style={styles.inputContaineri}>
+  <FontAwesome5 name="building" size={25} color="#55B9B9" />
+  <TextInput
+    
+    style={styles.textInputi}
+    placeholder="Search Origin"
+    value={inputValue}
+    onChangeText={filterOrigins1}
+  />
+</View>
       
       {showOriginList && (
   loading ? (
@@ -364,14 +398,19 @@ const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
 <View style={{marginBottom:20}}></View>
        
-        {/* </TouchableOpacity> */}
-        <TextInput
-          style={styles.textInput22}
-          placeholderTextColor="#27267d"
-          placeholder="Enter Destination"
-          value={inputValue1}
-        onChangeText={filterdestination}
-        />
+<Text style={styles.titleText2}>Destination</Text>
+
+<View style={styles.inputContaineri}>
+<FontAwesome5 name="building" size={25} color="#55B9B9" />
+<TextInput
+
+style={styles.textInputi}
+placeholder="Search Destination"
+value={inputValue1}
+onChangeText={filterdestination}
+/>
+</View>
+       
 
 {showdestinationList && (
   loading ? (
@@ -405,15 +444,13 @@ const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
       
       <View style={styles.dateInputContainer}>
-        {/* <TextInput
-          style={styles.textInput}
-          placeholder="Departure Date"
-          value={departureDate}
-          onChangeText={setDepartureDate}
-        /> */}
 
 
-            <Text
+      <Text style={styles.titleText2}>Departure Date</Text>
+
+<View style={styles.inputContaineri}>
+<FontAwesome5 name="calendar" size={25} color="#55B9B9" />
+<Text
   placeholder="Date (DD/MM/YYYY)"
   placeholderTextColor="#27267d"
   onPress={showDatePicker}
@@ -421,11 +458,29 @@ const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 >
   {formatDate(selectedDate)}
 </Text>
+</View>
+
+
+           <View style={{marginBottom:20}}></View>
+<Text style={styles.titleText2}>Return Date</Text>
+
+<View style={styles.inputContaineri}>
+<FontAwesome5 name="calendar" size={25} color="#55B9B9" />
+<Text
+  placeholder="Date (DD/MM/YYYY)"
+  placeholderTextColor="#27267d"
+  onPress={showDatePickerr}
+  style={styles.textInput1}
+>
+{selectedDater ? formatDate(selectedDater) : 'Select Date'}
+</Text>
+</View>
  <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode="date"
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
+        minimumDate={new Date()}
       />
 
 <View style={{marginBottom:10}}></View>
@@ -444,7 +499,7 @@ const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
         {
           if (ref) {
             // If ref is not empty, navigate to 'bus1' with parameters
-            navigation.navigate('bus1', { oname: selectedOrigin, ocode: selectedOrigincode, dname: selecteddes, dcode: selectedescode, date: formatDate(selectedDate), ref: ref });
+            navigation.navigate('bus1', { oname: selectedOrigin, ocode: selectedOrigincode, dname: selecteddes, dcode: selectedescode, date: formatDate(selectedDate), ref: ref ,date1: selectedDater ? formatDate(selectedDater) : ''});
           } else {
             // Handle the case when ref is empty, e.g., show an alert or log a message
             console.log('Ref is empty. Cannot navigate.');
@@ -475,8 +530,9 @@ const styles = StyleSheet.create({
   container11: {
     borderRadius:20,
     
-    
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderWidth:1,
+    borderColor:'#55B9B9',
+    backgroundColor: '#fff',
    // backgroundColor: '#fff',
   },
   title: {
@@ -496,7 +552,7 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     marginBottom: 10,
-    backgroundColor: '#000',
+    backgroundColor: '#fff',
     width: '100%',
    borderTopLeftRadius: 20,
    borderTopRightRadius: 20,
@@ -506,17 +562,35 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 20,
     fontWeight: 'bold',
+    marginLeft:14 ,
+    padding: 10,
+    height: 50,
+    color: '#55B9B9',
+  },
+  titleText2: {
+    fontSize: 16,
+   
+    padding: 0,
+    height: 30,
+    color: '#000',
+  },
+  titleText1: {
+    fontSize: 16,
+    fontWeight: 'bold',
     textAlign: 'center',
     padding: 10,
     height: 50,
-    color: '#fff',
+    color: '#000',
   },
   inputContainer: {
-    margin:20,
+    marginLeft:20,
+    marginRight:20,
+    marginTop:10,
+    marginBottom:20,
     flexDirection: 'column',
     
   
-    color: '#000' 
+    color: '#fff' 
   },
   dateInputContainer: {
 
@@ -527,8 +601,8 @@ const styles = StyleSheet.create({
   },
   textInput: {
     backgroundColor: '#fff',
-    borderWidth: 0,
-    borderColor: '#ccc',
+    borderWidth: 1,
+    borderColor: '#55B9B9',
     padding: 10,
     fontSize: 16,
     // marginBottom: 24,  // Add marginBottom for spacing below the text input
@@ -608,6 +682,7 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'center', // or 'stretch' for a different effect
     justifyContent: 'center',
+    backgroundColor:'CBD1D2',
   },
   cityContainer: {
     flexDirection: 'row', // Align children horizontally
@@ -619,6 +694,18 @@ const styles = StyleSheet.create({
     marginLeft:20,
     marginRight:20,
     marginBottom:10,
+  },
+  inputContaineri: {
+    flexDirection: 'row', // Align children horizontally
+    alignItems: 'center', // Center items vertically
+    borderWidth: 1, // Add border for better visibility
+    borderColor: '#55B9B9', // Border color
+    borderRadius: 5, // Border radius for a rounded appearance
+    padding: 10, // Add padding for better spacing
+  },
+  textInputi: {
+    flex: 1, // Takes the remaining space in the container
+    marginLeft: 10, // Add left margin to create space between icon and input
   },
 
 
