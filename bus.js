@@ -44,7 +44,7 @@ const BusSearchScreen = ({ navigation }) => {
   const [inputValue, setInputValue] = useState('');
   const [ref, setref] = useState('');
   const [inputValue1, setInputValue1] = useState('');
-  const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTAwQGdtYWlsLmNvbSIsInVzZXJJZCI6NDUsImlhdCI6MTcwNTM1MTY0MywiZXhwIjoxNzA1OTU2NDQzfQ.-bQDpD1vHHcIrYdZi9adix0I6o0zCasW7NlgufmtqTtaUT9LVR7F4mvUa-mBX6ycE-Jyp5cXSgRuVK1DE___0Q';
+  const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTAwQGdtYWlsLmNvbSIsInVzZXJJZCI6NDUsImlhdCI6MTcwNjAyMzA5NiwiZXhwIjoxNzA2NjI3ODk2fQ.scqh3FMQXEl_CFaFVP6QKk_ronrimTFaJsJhb2RUm1yBXNix5p8Y2W0R6u56jMTF7Vph-3gEr7mLmMWnL0totQ';
 
   const [departureDate, setDepartureDate] = useState(new Date().toISOString().split('T')[0]);
   const [returnDate, setReturnDate] = useState(new Date().toISOString().split('T')[0]);
