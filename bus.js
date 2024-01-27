@@ -8,7 +8,8 @@ import {
   FlatList,
   TouchableOpacity,
    ActivityIndicator,
-   ImageBackground
+   ImageBackground,
+   Alert
 
 
 } from 'react-native';
@@ -24,6 +25,7 @@ import  Icon  from 'react-native-vector-icons/MaterialIcons';
 
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome library
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BusSearchScreen = ({ navigation }) => {
   const [originList, setOriginList] = useState([]);
@@ -44,7 +46,6 @@ const BusSearchScreen = ({ navigation }) => {
   const [inputValue, setInputValue] = useState('');
   const [ref, setref] = useState('');
   const [inputValue1, setInputValue1] = useState('');
-  const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTAwQGdtYWlsLmNvbSIsInVzZXJJZCI6NDUsImlhdCI6MTcwNjAyMzA5NiwiZXhwIjoxNzA2NjI3ODk2fQ.scqh3FMQXEl_CFaFVP6QKk_ronrimTFaJsJhb2RUm1yBXNix5p8Y2W0R6u56jMTF7Vph-3gEr7mLmMWnL0totQ';
 
   const [departureDate, setDepartureDate] = useState(new Date().toISOString().split('T')[0]);
   const [returnDate, setReturnDate] = useState(new Date().toISOString().split('T')[0]);
@@ -54,43 +55,116 @@ const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
 const [isDatePickerVisible1, setDatePickerVisibility1] = useState(false);
 const [isDatePickerVisible2, setDatePickerVisibility2] = useState(false);
+const [token, setToken] = useState('');
 
-  useEffect(() => {
-    
+const [id, setid] = useState('');
+
+
+const [emailAddress, setEmailAddress] = useState('');
+const [gender, setGender] = useState('');
+const [callingCode, setCallingCode] = useState('');
+const [phoneNumber, setPhoneNumber] = useState('');
+
+ 
+
+useEffect(() => {
+
+  const fetchProfileData = async () => {
+    try {
+      console.log("Fetching profile data for user ID:", id);
+  
+      const response = await fetch(`https://halaltravel.ai/ht/api/profile/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json', // Add other headers if needed
+        },
+      });
+  
+      console.log("Response status:", response.status);
+  
+      const data = await response.json();
+      console.log("Fetched data:", data.email,data.countryCallingCode,data.phoneNumber);
+  
+      const email = data.email;
+      const userCallingCode = data.countryCallingCode;
+      const mobileNumber = data.phoneNumber;
+  
+      setEmailAddress(email);
+      setCallingCode(userCallingCode);
+      setPhoneNumber(mobileNumber);
+    } catch (error) {
+      console.error('Error fetching profile data:', error);
+      // Handle error (e.g., set an error state)
+    }
+  };
+  
+
+  // Call the fetchProfileData function when the component mounts
+  
+ 
+  const fetchData = async () => {
+    try {
+      // Load token from AsyncStorage
+      const storedToken = await AsyncStorage.getItem('token');
+      const storedTokenid = await AsyncStorage.getItem('userId');
+
+      if (storedToken) {
+        setToken(storedToken);
+        setid(storedTokenid)
+      } else {
+        // Handle the case where the token is not available
+        console.error('Token not found in AsyncStorage');
+        return;
+      }
+    } catch (error) {
+      console.error('Error loading token from AsyncStorage:', error);
+      return;
+    }
 
     setLoading(true);
+
     // Define the request payload
     const requestData = {
       // Include any necessary data in the request body
     };
-  
-    // Call the API with a POST request and include the bearer token in the header
-    fetch('https://halaltravel.ai/ht/api/v1/bus/search/origin', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(requestData),
-    })
-      .then(response => response.json())
-      .then(data => {
-    //    console.log("aaaaa", data);
-        setOriginList(data.data.stateList);
-        setLoading(false);
-      //  fetchDestinationList()
 
-      })
-      .catch(error => console.error('Error fetching origin data:', error));
-      navigation.setOptions({
-        headerLeft: () => (
-          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 10 }}>
-          <Icon name="arrow-back" size={25} color="#007AFF" />
-        </TouchableOpacity>
-        ),
-        headerTitle: '',
+    // Call the API with a POST request and include the bearer token in the header
+    try {
+      const response = await fetch('https://halaltravel.ai/ht/api/v1/bus/search/origin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(requestData),
       });
-    }, [navigation]);
+
+      if (response.ok) {
+        const data = await response.json();
+        setOriginList(data.data.stateList);
+        fetchProfileData();
+      } else {
+        // Handle API error response
+        console.error('API Error:', response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching origin data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+
+  navigation.setOptions({
+    headerLeft: () => (
+      <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 10 }}>
+        <Icon name="arrow-back" size={25} color="#007AFF" />
+      </TouchableOpacity>
+    ),
+    headerTitle: '',
+  });
+}, [id]);
   const fetchDestinationList = async () => {
     try {
       const response = await fetch('https://halaltravel.ai/ht/api/v1/bus/search/destination', {
@@ -499,7 +573,7 @@ onChangeText={filterdestination}
         {
           if (ref) {
             // If ref is not empty, navigate to 'bus1' with parameters
-            navigation.navigate('bus1', { oname: selectedOrigin, ocode: selectedOrigincode, dname: selecteddes, dcode: selectedescode, date: formatDate(selectedDate), ref: ref ,date1: selectedDater ? formatDate(selectedDater) : ''});
+            navigation.navigate('bus1', { oname: selectedOrigin, ocode: selectedOrigincode, dname: selecteddes, dcode: selectedescode, date: formatDate(selectedDate), ref: ref ,date1: selectedDater ? formatDate(selectedDater) : '',email: emailAddress,callingCode:callingCode,phone:phoneNumber});
           } else {
             // Handle the case when ref is empty, e.g., show an alert or log a message
             console.log('Ref is empty. Cannot navigate.');

@@ -1,5 +1,6 @@
 import React, { useState ,useEffect } from 'react';
 import 'react-native-get-random-values';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { View, Text, StatusBar, StyleSheet, Image, TextInput, TouchableOpacity,Platform ,FlatList, Alert} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -340,11 +341,25 @@ const handleConfirm = (date) => {
     setDropdownOpen(false);
   };
 
-  // useEffect(() => {
-  //   // This code will execute when the component is mounted or re-rendered
-  //   setSelectedDate(selectedDate);
-  //  // Alert.alert("daaaa")
-  // }, [selectedDate]);
+  const [token, settoken] = useState('');
+  useEffect(() => {
+    const loadUserIdFromAsyncStorage = async () => {
+      try {
+        const storedUserIdString = await AsyncStorage.getItem('userId');
+        const token1 = await AsyncStorage.getItem('token');
+        if (storedUserIdString) {
+          settoken(token1)
+          const storedUserId = JSON.parse(storedUserIdString);
+        //  Alert.alert(`User ${storedUserId} ${token}`);
+        //  setUserId(storedUserId);
+        }
+      } catch (error) {
+        console.error('Error loading user ID from AsyncStorage:', error);
+      }
+    };
+  
+    loadUserIdFromAsyncStorage();
+  }, []);
 
 
   const [isDropdownOpendays, setDropdownOpendays] = useState(false);

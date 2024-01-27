@@ -2,11 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { View, TouchableOpacity,Text, FlatList, StyleSheet,Image ,ActivityIndicator} from 'react-native';
+import { View, TouchableOpacity,Text, FlatList, StyleSheet,Image ,ActivityIndicator, Alert} from 'react-native';
 import { WebView } from 'react-native-webview';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 const MyWebView = ({ route, navigation }) => {
-  const { oname, ocode, dname, dcode, date, ref, date1 } = route.params;
+  const { oname, ocode, dname, dcode, date, ref, date1,email,callingCode,phone } = route.params;
   const [redirectUrl, setRedirectUrl] = useState('');
 
    const [bookingNo, setbookingNo] = useState('');
@@ -15,6 +18,7 @@ const MyWebView = ({ route, navigation }) => {
   
 const [ShowWebView, setShowWebView] = useState(true);
 const [ticketData, setTicketData] = useState([]);
+
   const handleLoad = () => {
     setLoading(false);
   };
@@ -27,6 +31,27 @@ const [ticketData, setTicketData] = useState([]);
   ]
 
   useEffect(() => {
+   // Alert(email)
+   console.log("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",email,callingCode,phone)
+    const fetchData = async () => {
+    try {
+      // Load token from AsyncStorage
+      const storedToken = await AsyncStorage.getItem('token');
+
+      if (storedToken) {
+        setToken(storedToken);
+      } else {
+        // Handle the case where the token is not available
+        console.error('Token not found in AsyncStorage');
+        return;
+      }
+    } catch (error) {
+      console.error('Error loading token from AsyncStorage:', error);
+      return;
+    }
+  }
+  fetchData()
+  
     // Check if 'ref' is not empty and log it
     if (ref) {
       console.log('Received ref:', ref);
@@ -39,7 +64,7 @@ const [ticketData, setTicketData] = useState([]);
       ),
       headerTitle: '',
     });
-  }, [navigation]);
+  }, [navigation,token]);
 
   let salesTransactionNoCounter = 0;
 
@@ -95,11 +120,11 @@ const [ticketData, setTicketData] = useState([]);
     DateFrom: date,
     AffCode: 'gohub',
     DateTo: date1,
-    UserDialCode: '+60',
-    UserEmailAddress: 'bilal.muhammad4922@gmail.com',
+    UserDialCode: callingCode !== '' ? callingCode : '+60',
+    UserEmailAddress: email,
     UserGender: 'false',
-    UserIdentityNumber: '001106-03-0854',
-    UserMobileNumber: '1137373737',
+    UserIdentityNumber: '001106-03-0111',
+    UserMobileNumber: phone,
     UserPassportNo: '',
     PartnerBookingReferenceNo: ref,
     PostbackURL: 'https://halaltravel.ai/ht/api/v1/bus/booking/confirm',

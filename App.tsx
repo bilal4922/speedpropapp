@@ -15,6 +15,7 @@ import hotel3 from './hotel3';
 import bus from './bus';
 import bus1 from './bus1';
 import HomeScreen from './HomeScreen';
+import forgot from './forgot';
 import ProfileScreen from './ProfileScreen';
  import SettingsScreen from './SettingsScreen';
   import MyPlanScreen from './MyPlanScreen';
@@ -27,6 +28,7 @@ const App = () => {
       <Stack.Navigator initialRouteName="signin">
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="forgot" component={forgot} />
         <Stack.Screen name="hotel1" component={hotel1} />
         <Stack.Screen name="hotel2" component={hotel2} />
         <Stack.Screen name="hotel3" component={hotel3} />

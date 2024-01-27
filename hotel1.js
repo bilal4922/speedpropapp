@@ -1,4 +1,4 @@
-import { View, Text, Button, SafeAreaView, StatusBar, StyleSheet,TextInput, FlatList,Image,TouchableOpacity, Dimensions,ActivityIndicator } from 'react-native';
+import { View, Text, Button, SafeAreaView, StatusBar, StyleSheet,TextInput, FlatList,Image,TouchableOpacity, Dimensions,ActivityIndicator,Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState ,useEffect } from 'react';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -7,6 +7,8 @@ import  Icon  from 'react-native-vector-icons/MaterialIcons';
 import { Placeholder, PlaceholderMedia, PlaceholderLine, Fade } from 'react-native-loading-placeholder';
 import { fetchData } from './redux/actions';
 import AnimatedLoader from "react-native-animated-loader";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const HomeScreen = ({ route }) => {
   const navigation = useNavigation();
  
@@ -34,16 +36,34 @@ const HomeScreen = ({ route }) => {
   const [loading, setLoading] = useState(true);
   const { address } = route.params;
   const { date } = route.params;
-  
+  const [token, settoken] = useState('');
   useEffect(() => {
-
+   
+   
+      const loadUserIdFromAsyncStorage = async () => {
+        try {
+          const storedUserIdString = await AsyncStorage.getItem('userId');
+          const token1 = await AsyncStorage.getItem('token');
+          if (storedUserIdString) {
+            settoken(token1)
+            const storedUserId = JSON.parse(storedUserIdString);
+            Alert.alert(`User ${storedUserId} ${token1}`);
+            fetchData();
+          
+          //  setUserId(storedUserId);
+          }
+        } catch (error) {
+          console.error('Error loading user ID from AsyncStorage:', error);
+        }
+      };
+      loadUserIdFromAsyncStorage();
     const fetchData = async () => {
       try {
         const response = await fetch('https://halaltravel.ai/ht/api/v1/hotel/search/byPlaceName', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTAwQGdtYWlsLmNvbSIsInVzZXJJZCI6NDUsImlhdCI6MTcwMzI2NTA5NywiZXhwIjoxNzAzODY5ODk3fQ.uJUkIqzLZ5Aos_g5ww0rkN5iA6X-GOfMOmbRACbHjhJ36SDZpbZVNJ2xY4lhrr8L_gJKrpQiCdfhQeiN7gp1uA'
+            'Authorization': `Bearer ${token}`
             // Add any other headers required by the API
           },
           body: JSON.stringify({
@@ -56,8 +76,8 @@ const HomeScreen = ({ route }) => {
             // children: []
             "query" : address,
     "language" : "en",
-    "checkin": "2023-12-24",
-    "checkout": "2023-12-25",
+    "checkin": "2024-2-24",
+    "checkout": "2024-2-25",
     "currency": "MYR",
     "adults" : 2,
     "children" : []
@@ -65,7 +85,7 @@ const HomeScreen = ({ route }) => {
         });
   
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`c ${response.status}`);
         }
   
         const json = await response.json();
@@ -79,7 +99,7 @@ const HomeScreen = ({ route }) => {
       }
     };
   
-    fetchData();
+    
 
    // fetchData();
 
@@ -99,7 +119,7 @@ const HomeScreen = ({ route }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTAwQGdtYWlsLmNvbSIsInVzZXJJZCI6NDUsImlhdCI6MTcwMzI2NTA5NywiZXhwIjoxNzAzODY5ODk3fQ.uJUkIqzLZ5Aos_g5ww0rkN5iA6X-GOfMOmbRACbHjhJ36SDZpbZVNJ2xY4lhrr8L_gJKrpQiCdfhQeiN7gp1uA'
+           'Authorization': `Bearer ${token}`
           // Add any other headers required by the API
         },
         body: JSON.stringify({

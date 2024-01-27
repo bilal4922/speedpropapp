@@ -18,7 +18,8 @@ import {
   FontSize,
   FontFamily,
 } from "./GlobalStylessignin";
-import Icon from 'react-native-vector-icons/FontAwesome';
+
+import  Icon  from 'react-native-vector-icons/MaterialIcons';
 import {
   GoogleSignin,
   statusCodes,
@@ -30,15 +31,75 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const SignInPageV2 = ({ navigation }) => {
 
 
-  React.useLayoutEffect(() => {
+  // React.useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerShown: false, // Hide the header for this screen
+  //   });
+  // }, [navigation]);
+
+
+  const handleSubmit = async () => {
+    // Check if email is empty
+    if (!email) {
+      Alert.alert( "Please enter your email address.");
+      return;
+    }
+  
+    // Create a data object with the email
+    const data = {
+      "email": email
+    };
+  
+    try {
+      setIsLoading(true);
+  
+      // Make a POST request to your API endpoint
+      const response = await fetch("https://halaltravel.ai/ht/api/auth/resetPassword", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+  
+      if (response.status === 200) {
+        // Email sent successfully
+        console.log("success");
+        Alert.alert("Success", "Successfully reset password. Please check your email address.");
+      } else {
+        // Handle other response statuses
+        console.error(`Error: ${response.status} - ${response.statusText}`);
+        Alert.alert("Error", "No user found with the given email.");
+      }
+    } catch (error) {
+      // Handle any errors
+      console.error("Error sending reset password request:", error);
+      Alert.alert("Error", "An error occurred while sending the reset password request.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  
+  
+
+  useEffect(() => {
+
+  
+  
     navigation.setOptions({
-      headerShown: false, // Hide the header for this screen
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 10 }}>
+          <Icon name="arrow-back" size={25} color="#007AFF" />
+        </TouchableOpacity>
+      ),
+      headerTitle: '',
     });
-  }, [navigation]);
+  }, []);
 
   // Hide the status bar as well
-  StatusBar.setHidden(true);
-  const [email, setEmail] = React.useState("enmhg1990@gmail.com");
+ //s StatusBar.setHidden(true);
+  const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("12345");
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -163,11 +224,11 @@ const SignInPageV2 = ({ navigation }) => {
   
 
   // Use navigation.setOptions to hide the header
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerShown: false, // Hide the header for this screen
-    });
-  }, [navigation]);
+  // React.useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerShown: false, // Hide the header for this screen
+  //   });
+  // }, [navigation]);
 
   
 
@@ -182,7 +243,7 @@ const SignInPageV2 = ({ navigation }) => {
             source={require("./assets/visitmalaysia26-2.png")}
           />
           <View style={styles.frame1}>
-            <Text style={styles.welcomeBack}>Welcome back</Text>
+            <Text style={styles.welcomeBack}>Forgot your password?</Text>
           </View>
           <View
             style={[
@@ -203,27 +264,9 @@ const SignInPageV2 = ({ navigation }) => {
               onChangeText={(text) => setEmail(text)}
             ></TextInput>
           </View>
-          <View
-            style={[
-              styles.emailWrapper,
-              styles.emailWrapperShadowBox,
-              {
-                width: "90%",
-                marginTop: 10,
-                marginLeft: 20,
-              },
-            ]}
-          >
-            <TextInput
-              placeholder="Password"
-              placeholderTextColor={Color.colorDarkslateblue_300}
-              style={[styles.email, styles.emailTypo]}
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-            ></TextInput>
-          </View>
+         
           <TouchableOpacity
-            onPress={handleSignIn}
+            onPress={handleSubmit}
             style={[
               styles.emailWrapper,
               styles.emailWrapperShadowBox,
@@ -249,124 +292,17 @@ const SignInPageV2 = ({ navigation }) => {
                   },
                 ]}
               >
-                Sign In
+                Send Link
               </Text>
             )}
           </TouchableOpacity>
-          <View style={[styles.frame7, styles.frameFlexBox, { marginLeft: 20, marginRight: 20 }]}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("forgot");
-                // Handle the press event here
-                // You can add your navigation logic or any other actions you want.
-              }}
-            >
-              <Text style={[styles.forgotPassword, styles.getHelpTypo]}>
-                Forgot Password?
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("signup");
-                // Handle the press event here
-                // You can add your navigation logic or any other actions you want.
-              }}
-            >
-              <Text style={[styles.forgotPassword, styles.getHelpTypo]}>
-                Sign up now
-              </Text>
-            </TouchableOpacity>
-          </View>
+        
         </View>
         <View style={[styles.signInPageV2, styles.frameFlexBox2]}>
         {/* ... other components */}
         
         {/* Facebook Login Button */}
-       <View>
-       <TouchableOpacity
-  onPress={handleGoogleLogin}
-
- style={[
-      styles.emailWrapperg,
-      styles.emailWrapperShadowBox,
-      {
-        backgroundColor: Color.colorMidnightblue_100,
-        borderRadius: Border.br_3xs,
-        width: "90%",
-        marginTop: 10,
-        marginLeft: 20,
-        alignItems: "center",
-        justifyContent: "center",
-      },
-    
-  ]}
->
-  {isLoading ? (
-    <ActivityIndicator color="#FFFFFF" />
-  ) : (
-    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-      <Icon name="facebook" size={24} color="#FFFFFF" />
-      <Text
-        style={[
-          styles.email,
-          styles.emailTypo,
-          {
-            color: "#FFFFFF",
-            textAlign: "center",
-            fontWeight: 'bold',
-            marginLeft: 10, // Adjust the spacing between the icon and text
-          },
-        ]}
-      >
-        Sign in with Facebook
-      </Text>
-    </View>
-  )}
-</TouchableOpacity>
-       <TouchableOpacity
-  onPress={signIn}
-
- style={[
-      styles.emailWrapperg,
-      styles.emailWrapperShadowBox,
-      {
-        backgroundColor: '#fff',
-        borderRadius: Border.br_3xs,
-        width: "90%",
-        marginTop: 10,
-        marginLeft: 20,
-        alignItems: "center",
-        justifyContent: "center",
-      },
-    
-  ]}
->
-  {isLoading ? (
-    <ActivityIndicator color="#FFFFFF" />
-  ) : (
-    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-      <Icon name="google" size={24} color="#192579" />
-      <Text
-        style={[
-          styles.email,
-          styles.emailTypo,
-          {
-            color: "gray",
-            textAlign: "center",
-            fontWeight: 'bold',
-            marginLeft: 10, // Adjust the spacing between the icon and text
-          },
-        ]}
-      >
-        Sign in with Google
-      </Text>
-    </View>
-  )}
-</TouchableOpacity>
-
-        
-      
-       </View>
+     
         
       </View>
 
@@ -378,18 +314,15 @@ const SignInPageV2 = ({ navigation }) => {
         >
           <Text
             style={[
-              styles.byLoggingInContainer,
+              styles.byLoggingInContfainer,
               styles.getHelpTypo,
               { margin: 20 },
             ]}
           >
             <Text
               style={styles.byLoggingIn}
-            >{`By logging in, it’s redeemed that you have read and agreed to Epic Travel `}</Text>
-            <Text style={styles.termsOfUse}>Terms of Use</Text>
-            <Text style={styles.byLoggingIn}>{` and `}</Text>
-            <Text style={styles.termsOfUse}>Privacy Policy</Text>
-            <Text style={styles.byLoggingIn}>.</Text>
+            >{`To reset your password, please enter your email address — we’ll send you a link to reset it.`}</Text>
+            
           </Text>
         </View>
       </View>
