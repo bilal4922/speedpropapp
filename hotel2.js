@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Button, SafeAreaView,Text, StyleSheet, TouchableOpacity, Image,ActivityIndicator } from 'react-native';
+import { View, Button, SafeAreaView,Text, StyleSheet, TouchableOpacity, Image,ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Rating } from 'react-native-ratings';
 import {SliderBox} from 'react-native-image-slider-box';
 import { ScrollView } from 'react-native-gesture-handler';
 
 import  Icon  from 'react-native-vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const HomeScreen = ({ route }) => {
   const hotelData = {
@@ -18,8 +20,8 @@ const HomeScreen = ({ route }) => {
   };
 
 
-  const { hotelid } = route.params;
-  
+  const { hotelid} = route.params;
+  var  token = ''
   const { hotelref } = route.params;
   const { hotelname } = route.params;
   const [loading, setLoading] = useState(true);
@@ -46,13 +48,31 @@ const HomeScreen = ({ route }) => {
   };
 
   useEffect(() => {
+    const loadUserIdFromAsyncStorage = async () => {
+      try {
+        const storedUserIdString = await AsyncStorage.getItem('userId');
+        const token1 = await AsyncStorage.getItem('token');
+        if (storedUserIdString) {
+         // settoken(token1)
+         token = token1
+        //  const storedUserId = JSON.parse(storedUserIdString);
+        //  Alert.alert(`User ${storedUserId} ${token1}`);
+          fetchData();
+        
+        //  setUserId(storedUserId);
+        }
+      } catch (error) {
+        console.error('Error loading user ID from AsyncStorage:', error);
+      }
+    };
+    loadUserIdFromAsyncStorage();
     const fetchData = async () => {
       try {
         const response = await fetch('https://halaltravel.ai/ht/api/v1/hotel/search/byHotelId', {
           method: 'POST',
           headers: {
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTAwQGdtYWlsLmNvbSIsInVzZXJJZCI6NDUsImlhdCI6MTcwMzI2NTA5NywiZXhwIjoxNzAzODY5ODk3fQ.uJUkIqzLZ5Aos_g5ww0rkN5iA6X-GOfMOmbRACbHjhJ36SDZpbZVNJ2xY4lhrr8L_gJKrpQiCdfhQeiN7gp1uA'
             // Add any other headers required by the API
           },
           body: JSON.stringify({
@@ -86,7 +106,7 @@ const HomeScreen = ({ route }) => {
       }
     };
   
-    fetchData();
+  //  fetchData();
     navigation.setOptions({
       headerLeft: () => (
         <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 10 }}>

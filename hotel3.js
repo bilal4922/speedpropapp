@@ -181,6 +181,7 @@ import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, FlatList } from
 import { useNavigation } from '@react-navigation/native';
 import { SliderBox } from 'react-native-image-slider-box'; // Make sure this library is installed
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomeScreen = ({ route }) => {
   const navigation = useNavigation();

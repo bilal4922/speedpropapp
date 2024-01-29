@@ -28,6 +28,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome'; // Import Font
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BusSearchScreen = ({ navigation }) => {
+  
   const [originList, setOriginList] = useState([]);
   const [selectedOrigin, setSelectedOrigin] = useState('');
   const [selectedOrigincode, setSelectedOrigincode] = useState('');

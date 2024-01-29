@@ -299,9 +299,22 @@ const nextDay = new Date(receivedData.date);
           color="#202756" size={30} style={styles.icon} />
           <Icon 
           
+          // onPress={() => {
+          //   const urlmain = 'https://gohub.com.my';
+          //   handleNavigate(urlmain);
+          // }}
+
           onPress={() => {
-            const urlmain = 'https://gohub.com.my';
-            handleNavigate(urlmain);
+            // const urlmain = 'https://gohub.com.my';
+            // handleNavigate(urlmain);
+            navigation.navigate('bus', {
+              address: "inputValue",
+            
+        
+              
+        
+           });
+  
           }}
           name="directions-bus" color="#202756" size={30} style={styles.icon} />
         

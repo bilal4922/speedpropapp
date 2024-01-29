@@ -8,6 +8,8 @@ import { Placeholder, PlaceholderMedia, PlaceholderLine, Fade } from 'react-nati
 import { fetchData } from './redux/actions';
 import AnimatedLoader from "react-native-animated-loader";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+
 
 const HomeScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -36,7 +38,13 @@ const HomeScreen = ({ route }) => {
   const [loading, setLoading] = useState(true);
   const { address } = route.params;
   const { date } = route.params;
-  const [token, settoken] = useState('');
+  var  token = ''
+  const [isDatePickerVisible1, setDatePickerVisibility1] = useState(false);
+const [isDatePickerVisible2, setDatePickerVisibility2] = useState(false);
+const [selectedDate, setSelectedDate] = useState(new Date(date));
+  const [selectedDater, setSelectedDater] = useState(new Date(date));
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
   useEffect(() => {
    
    
@@ -45,9 +53,10 @@ const HomeScreen = ({ route }) => {
           const storedUserIdString = await AsyncStorage.getItem('userId');
           const token1 = await AsyncStorage.getItem('token');
           if (storedUserIdString) {
-            settoken(token1)
-            const storedUserId = JSON.parse(storedUserIdString);
-            Alert.alert(`User ${storedUserId} ${token1}`);
+           // settoken(token1)
+           token = token1
+          //  const storedUserId = JSON.parse(storedUserIdString);
+          //  Alert.alert(`User ${storedUserId} ${token1}`);
             fetchData();
           
           //  setUserId(storedUserId);
@@ -57,49 +66,77 @@ const HomeScreen = ({ route }) => {
         }
       };
       loadUserIdFromAsyncStorage();
-    const fetchData = async () => {
-      try {
-        const response = await fetch('https://halaltravel.ai/ht/api/v1/hotel/search/byPlaceName', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+      const fetchData = async () => {
+        try {
+          const requestBody = {
+            "query": address,
+            "language": "en",
+            "checkin": formatDateToCustomFormat(selectedDate),
+            "checkout": formatDateToCustomFormat1(selectedDater),
+            "currency": "MYR",
+            "adults": 2,
+            "children": []
+          };
+      
+          console.log('Request Body:', JSON.stringify(requestBody));
+      
+          const response = await fetch('https://halaltravel.ai/ht/api/v1/hotel/search/byPlaceName', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json', // Add other headers if needed
+              // Add any other headers required by the API
+            },
+            body: JSON.stringify(requestBody),
+          });
+      
+          console.log('Request URL:', 'https://halaltravel.ai/ht/api/v1/hotel/search/byPlaceName');
+          console.log('Request Method:', 'POST');
+          console.log('Request Headers:', {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json', // Add other headers if needed
             // Add any other headers required by the API
-          },
-          body: JSON.stringify({
-            // query: address,
-            // language: "en",
-            // checkin: "2023-12-22",
-            // checkout: "2023-12-25",
-            // currency: "MYR",
-            // adults: 2,
-            // children: []
-            "query" : address,
-    "language" : "en",
-    "checkin": "2024-2-24",
-    "checkout": "2024-2-25",
-    "currency": "MYR",
-    "adults" : 2,
-    "children" : []
-          }),
-        });
-  
-        if (!response.ok) {
-          throw new Error(`c ${response.status}`);
+          });
+          console.log('Request Body:', JSON.stringify(requestBody));
+      
+          if (!response.ok) {
+            throw new Error(`HTTP Error: ${response.status}`);
+          }
+      
+          const json = await response.json();
+          setHotelsData(json.elements);
+          setbookingref(json.searchReference);
+        } catch (error) {
+          console.error('Failed to fetch hotels:', error);
+        } finally {
+          setLoading(false);
+          setIsRefreshing(false);
         }
+      };
+      
   
-        const json = await response.json();
-        setHotelsData(json.elements);
-        setbookingref(json.searchReference)
-      } catch (error) {
-        console.error('Failed to fetch hotels:', error);
-      } finally {
-        setLoading(false);
-        setIsRefreshing(false);
-      }
-    };
+    const formatDateToCustomFormat = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+      const day = String(date.getDate()).padStart(2, '0');
   
-    
+      return `${year}-${month}-${day}`;
+  };
+
+
+  const formatDateToCustomFormat1 = (date) => {
+    // Clone the input date to avoid modifying the original date object
+    const nextDay = new Date(date);
+
+    // Increment the date by 1 day
+    nextDay.setDate(date.getDate() + 1);
+
+    const year = nextDay.getFullYear();
+    const month = String(nextDay.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(nextDay.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+};
 
    // fetchData();
 
@@ -118,8 +155,8 @@ const HomeScreen = ({ route }) => {
       const response = await fetch('https://halaltravel.ai/ht/api/v1/hotel/search/bySearchReference', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-           'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
           // Add any other headers required by the API
         },
         body: JSON.stringify({
@@ -156,9 +193,38 @@ const HomeScreen = ({ route }) => {
     endDate.setDate(date.getDate() + 1);
     const endDateFormatted = endDate.toLocaleDateString('en-US', options);
 
-    return `${startDate} - ${endDateFormatted}`;
+    return ` ${startDate}`;
   };
 
+  // let isFirstTime = true;
+
+  // const formatDate1 = (date) => {
+  //     const options = { weekday: 'short', day: 'numeric', month: 'short' };
+  
+  //     const startDate = date.toLocaleDateString('en-US', options);
+  
+  //     const endDate = new Date(date);
+      
+  //     // Conditionally add +1 only the first time
+  //     if (isFirstTime) {
+  //         endDate.setDate(date.getDate() + 1);
+  //         isFirstTime = false;
+  //     }
+      
+  //     const endDateFormatted = endDate.toLocaleDateString('en-US', options);
+  
+  //     return `${endDateFormatted}`;
+  // };
+  const formatDate1 = (date) => {
+    const options = { weekday: 'short', day: 'numeric', month: 'short' };
+    // Format the date and the next day
+    const startDate = date.toLocaleDateString('en-US', options);
+    const endDate = new Date(date);
+    endDate.setDate(date.getDate() + 1);
+    const endDateFormatted = endDate.toLocaleDateString('en-US', options);
+
+    return `${endDateFormatted}`;
+  };
   const handleLoadMore = () => {
     if (!loading) {
       setpage(prevPage => prevPage + 1);
@@ -173,6 +239,40 @@ const HomeScreen = ({ route }) => {
    // fetchData();
   };
 
+  const handleConfirm = (date) => {
+    if(isDatePickerVisible1){
+      setSelectedDate(date);
+      hideDatePicker();
+    }
+
+    if(isDatePickerVisible2){
+      setSelectedDater(date);
+      hideDatePickerr();
+    }
+    
+  };
+  const showDatePicker = () => {
+    setDatePickerVisibility1(true);
+      setDatePickerVisibility(true);
+    };
+    
+    const hideDatePicker = () => {
+     
+      setDatePickerVisibility(false);
+      setDatePickerVisibility1(false);
+    };
+  
+    const showDatePickerr = () => {
+  
+     
+      setDatePickerVisibility(true);
+      setDatePickerVisibility2(true);
+    };
+    
+    const hideDatePickerr = () => {
+      setDatePickerVisibility(false);
+      setDatePickerVisibility2(false);
+    };
 
   // const hotelsData = [
   //   {
@@ -264,6 +364,7 @@ const HomeScreen = ({ route }) => {
          hotelid:hotelData.hotelId,
          hotelname:hotelData.hotelName,
          hotelref:bookingref,
+         token:token,
         //  day: selectedThemedays1,
        //  date: selectedDate,
          date: date,
@@ -338,15 +439,38 @@ const HomeScreen = ({ route }) => {
     
     
       <View style={styles.container1}>
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode="date"
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
+        minimumDate={new Date()}
+      />
       <Text
         style={styles.searchBar}
         placeholder="Penang"
         // Add any additional search bar props or styling as needed
       >{address}</Text>
 
-      <Text style={styles.dateText}>
+      {/* <Text style={styles.dateText}>
       {formatDate(new Date(date))}• 2 Guests
+      </Text> */}
+       <View style={{flexDirection:'row'}}>
+   <Text style={styles.dateText}
+   onPress={showDatePicker}
+   >
+      {formatDate(selectedDate)} -
+      </Text> 
+      <Text style={styles.dateText}
+      onPress={showDatePickerr}>
+       {formatDate1(selectedDater)}
+      </Text> 
+      <Text style={styles.dateText}>
+      • 2 Guests
       </Text>
+
+    </View>
+
     </View>
       <View style={styles.container}>
     

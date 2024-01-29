@@ -430,7 +430,11 @@ const handleConfirm = (date) => {
 
   // Function to handle navigation when the "Search" button is pressed
   const handleNavigate689 = () => {
-
+    if (!inputValue.trim()) {
+      // Show alert and return early if inputValue is empty
+      Alert.alert("Please enter a location");
+      return;
+  }
 
     const receivedData = {
       theme: 2,
@@ -570,8 +574,13 @@ id:'ffff'
     <View style={[styles.transportItem, { alignItems: 'center' }]}>
       <TouchableOpacity
         onPress={() => {
+          if (!inputValue.trim()) {
+            // Show alert and return early if inputValue is empty
+            Alert.alert("Please enter a location");
+            return;
+        }
           title="Go to Details"
-          navigation.navigate('hotel2', {
+          navigation.navigate('hotel1', {
            address: inputValue,
            day: selectedThemedays1,
          //  date: selectedDate,
@@ -871,7 +880,7 @@ id:'ffff'
           </View>
         )}  */}
           <View style={styles.searchbutton}>
-            <Text   onPress={handleNavigate689} style={[styles.search, styles.dayTypo]}>SEARCHf</Text>
+            <Text   onPress={handleNavigate689} style={[styles.search, styles.dayTypo]}>SEARCH</Text>
           </View>
         </View>
       </View>
