@@ -7,7 +7,7 @@ import { WebView } from 'react-native-webview';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
+import QRCode from 'react-native-qrcode-svg';
 const MyWebView = ({ route, navigation }) => {
   const { oname, ocode, dname, dcode, date, ref, date1,email,callingCode,phone } = route.params;
   const [redirectUrl, setRedirectUrl] = useState('');
@@ -18,6 +18,7 @@ const MyWebView = ({ route, navigation }) => {
   
 const [ShowWebView, setShowWebView] = useState(true);
 const [ticketData, setTicketData] = useState([]);
+const [token, setToken] = useState('');
 
   const handleLoad = () => {
     setLoading(false);
@@ -40,6 +41,7 @@ const [ticketData, setTicketData] = useState([]);
 
       if (storedToken) {
         setToken(storedToken);
+      //  fetchData1();
       } else {
         // Handle the case where the token is not available
         console.error('Token not found in AsyncStorage');
@@ -92,7 +94,7 @@ const [ticketData, setTicketData] = useState([]);
               console.log('SalesTransactionNo has appeared four times. Sky!',);
               setShowWebView(false);
               setbookingNo(salesTransactionNo);
-              fetchData();
+              fetchData1();
           }
       }
   };
@@ -123,7 +125,7 @@ const [ticketData, setTicketData] = useState([]);
     UserDialCode: callingCode !== '' ? callingCode : '+60',
     UserEmailAddress: email,
     UserGender: 'false',
-    UserIdentityNumber: '001106-03-0111',
+    UserIdentityNumber: '',
     UserMobileNumber: phone,
     UserPassportNo: '',
     PartnerBookingReferenceNo: ref,
@@ -133,11 +135,13 @@ const [ticketData, setTicketData] = useState([]);
   };
 
 
-  const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTAwQGdtYWlsLmNvbSIsInVzZXJJZCI6NDUsImlhdCI6MTcwNjAyMzA5NiwiZXhwIjoxNzA2NjI3ODk2fQ.scqh3FMQXEl_CFaFVP6QKk_ronrimTFaJsJhb2RUm1yBXNix5p8Y2W0R6u56jMTF7Vph-3gEr7mLmMWnL0totQ';
+  //const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbm1oZzE5OTAwQGdtYWlsLmNvbSIsInVzZXJJZCI6NDUsImlhdCI6MTcwNjAyMzA5NiwiZXhwIjoxNzA2NjI3ODk2fQ.scqh3FMQXEl_CFaFVP6QKk_ronrimTFaJsJhb2RUm1yBXNix5p8Y2W0R6u56jMTF7Vph-3gEr7mLmMWnL0totQ';
 
-  const fetchData = async () => {
+  const fetchData1 = async () => {
     try {
-      const accessToken = "YOUR_BEARER_TOKEN"; // Replace with your actual token
+      const accessToken = "YOUR_BEARER_TOKEN"; 
+      
+      // Replace with your actual token `https://halaltravel.ai/ht/api/v1/bus/booking/${bookingNo}`
       const response = await fetch(`https://halaltravel.ai/ht/api/v1/bus/booking/${bookingNo}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -336,10 +340,24 @@ renderItem={({ item }) => (
     </View>
     <View style={{ flex: 0.3, justifyContent: 'center', alignItems: 'center' }}>
 
-          <Image
+          {/* <Image
         source={require('./assets/qr.jpg')}
         style={{ width: 100, height: 100,marginBottom:20 }}
-      />
+      /> */}
+        {item.tickets[0].boardingPassNo ? (
+          <View style={{marginBottom:20}}>
+              <QRCode
+                value={item.tickets[0].boardingPassNo} // Use the boardingPassNo from the current item
+                size={80}
+                color="black"
+                backgroundColor="white"
+              />
+              </View>
+            ) : (
+              <View style={{marginBottom:20,height:80,width:80}}>
+              <Text>No QR require</Text>
+              </View>
+            )}
   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
     
    

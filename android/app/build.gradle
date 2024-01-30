@@ -79,8 +79,8 @@ android {
         applicationId "com.visit.Epic.Travel"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 13
-        versionName "13.0"
+        versionCode 16
+        versionName "16.0"
     }
     signingConfigs {
         debug {

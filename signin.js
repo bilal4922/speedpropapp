@@ -38,8 +38,8 @@ const SignInPageV2 = ({ navigation }) => {
 
   // Hide the status bar as well
   StatusBar.setHidden(true);
-  const [email, setEmail] = React.useState("enmhg1990@gmail.com");
-  const [password, setPassword] = React.useState("12345");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
 
 

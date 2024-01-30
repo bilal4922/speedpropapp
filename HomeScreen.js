@@ -555,7 +555,7 @@ id:'ffff'
       <StatusBar barStyle="dark-content" backgroundColor="white" />
 
       <CustomHeader />
-      <ScrollView style  ={{width:'100%',height:1600, backgroundColor:'#fff'}}>
+      <ScrollView  keyboardShouldPersistTaps="handled" style  ={{width:'100%',height:1600, backgroundColor:'#fff'}}>
 
       
       <View style={styles.container}>
@@ -1337,4 +1337,3 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
-

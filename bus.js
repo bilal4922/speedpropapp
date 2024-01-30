@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
    ActivityIndicator,
    ImageBackground,
-   Alert
+   Alert,Platform 
 
 
 } from 'react-native';
@@ -28,7 +28,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome'; // Import Font
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BusSearchScreen = ({ navigation }) => {
-  
+  const [loading1, setLoading1] = useState(false);
   const [originList, setOriginList] = useState([]);
   const [selectedOrigin, setSelectedOrigin] = useState('');
   const [selectedOrigincode, setSelectedOrigincode] = useState('');
@@ -110,6 +110,8 @@ useEffect(() => {
       const storedTokenid = await AsyncStorage.getItem('userId');
 
       if (storedToken) {
+       // Alert(token)
+       console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",storedToken)
         setToken(storedToken);
         setid(storedTokenid)
       } else {
@@ -140,13 +142,16 @@ useEffect(() => {
         body: JSON.stringify(requestData),
       });
 
+      console.log("Response", `Bearer ${token}`,)
       if (response.ok) {
+
         const data = await response.json();
+        console.log("Responsess", data.data.stateList)
         setOriginList(data.data.stateList);
         fetchProfileData();
       } else {
         // Handle API error response
-        console.error('API Error:', response.status, response.statusText);
+        console.error('API Error:', response, response.statusText);
       }
     } catch (error) {
       console.error('Error fetching origin data:', error);
@@ -187,7 +192,7 @@ useEffect(() => {
 
       // if (result.status) {
         setDestinationList(result);
-        booking();
+      //  booking();
       // } else {
       //   // Handle error response
       //  // console.error(result.mes);
@@ -200,6 +205,7 @@ useEffect(() => {
 
   const booking = async () => {
     try {
+      setLoading(true); 
       const response = await fetch('https://halaltravel.ai/ht/api/v1/bus/booking/new', {
         method: 'POST',
         headers: {
@@ -215,6 +221,16 @@ useEffect(() => {
       const result = await response.json();
       console.log("pppp", result.busBookingReferenceNo);
       setref(result.busBookingReferenceNo)
+      setLoading(false); 
+
+     // if (ref) {
+
+        // If ref is not empty, navigate to 'bus1' with parameters
+        navigation.navigate('bus1', { oname: selectedOrigin, ocode: selectedOrigincode, dname: selecteddes, dcode: selectedescode, date: formatDate(selectedDate), ref: result.busBookingReferenceNo ,date1: selectedDater ? formatDate(selectedDater) : '',email: emailAddress,callingCode:callingCode,phone:phoneNumber});
+      // } else {
+      //   // Handle the case when ref is empty, e.g., show an alert or log a message
+      //   console.log('Ref is empty. Cannot navigate.');
+      // }
 
       // if (result.status) {
       //  setDestinationList(result);
@@ -223,6 +239,7 @@ useEffect(() => {
       //  // console.error(result.mes);
       // }
     } catch (error) {
+      setLoading(false); 
       // Handle fetch error
       console.error(error);
     }
@@ -413,6 +430,14 @@ useEffect(() => {
     return `${day}${month}${year}`;
   };
   
+  if (loading1) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
   return (
     <ImageBackground
    // source={require("./assets/busbackgroud.jpg")} // Change path to your image
@@ -572,13 +597,8 @@ onChangeText={filterdestination}
       </View>
       <TouchableOpacity style={styles.button} onPress={() => 
         {
-          if (ref) {
-            // If ref is not empty, navigate to 'bus1' with parameters
-            navigation.navigate('bus1', { oname: selectedOrigin, ocode: selectedOrigincode, dname: selecteddes, dcode: selectedescode, date: formatDate(selectedDate), ref: ref ,date1: selectedDater ? formatDate(selectedDater) : '',email: emailAddress,callingCode:callingCode,phone:phoneNumber});
-          } else {
-            // Handle the case when ref is empty, e.g., show an alert or log a message
-            console.log('Ref is empty. Cannot navigate.');
-          }
+          booking();
+         
         
        // navigation.navigate("bus1");
 
@@ -779,7 +799,10 @@ const styles = StyleSheet.create({
     padding: 10, // Add padding for better spacing
   },
   textInputi: {
-    flex: 1, // Takes the remaining space in the container
+
+    height: Platform.OS === 'android' ? 40 : undefined, // Set height to 40 for Android, undefined for iOS
+    flex: Platform.OS === 'android' ? 0 : 1,
+   
     marginLeft: 10, // Add left margin to create space between icon and input
   },
 
