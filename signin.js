@@ -219,6 +219,7 @@ const SignInPageV2 = ({ navigation }) => {
               placeholderTextColor={Color.colorDarkslateblue_300}
               style={[styles.email, styles.emailTypo]}
               value={password}
+              secureTextEntry={true}
               onChangeText={(text) => setPassword(text)}
             ></TextInput>
           </View>
@@ -301,9 +302,7 @@ const SignInPageV2 = ({ navigation }) => {
     
   ]}
 >
-  {isLoading ? (
-    <ActivityIndicator color="#FFFFFF" />
-  ) : (
+
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <Icon name="facebook" size={24} color="#FFFFFF" />
       <Text
@@ -321,7 +320,7 @@ const SignInPageV2 = ({ navigation }) => {
         Sign in with Facebook
       </Text>
     </View>
-  )}
+  
 </TouchableOpacity>
        <TouchableOpacity
   onPress={signIn}

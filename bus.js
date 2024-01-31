@@ -67,7 +67,35 @@ const [callingCode, setCallingCode] = useState('');
 const [phoneNumber, setPhoneNumber] = useState('');
 
  
+const fetchProfileData1 = async () => {
+  try {
+    setLoading1(true); 
+    console.log("Fetching profile data for user ID:", id);
 
+    const response = await fetch(`https://halaltravel.ai/ht/api/profile/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json', // Add other headers if needed
+      },
+    });
+
+    console.log("Response status:", response.status);
+
+    const data = await response.json();
+    console.log("Fetched data:", data.email,data.countryCallingCode,data.phoneNumber);
+
+    const email = data.email;
+    const userCallingCode = data.countryCallingCode;
+    const mobileNumber = data.phoneNumber;
+    setLoading1(false); 
+    navigation.navigate('bus1', { oname: selectedOrigin, ocode: selectedOrigincode, dname: selecteddes, dcode: selectedescode, date: formatDate(selectedDate), ref: result.busBookingReferenceNo ,date1: selectedDater ? formatDate(selectedDater) : '',email: data.email,callingCode:'+60',phone:data.phoneNumber});
+
+  } catch (error) {
+    console.error('Error fetching profile data:', error);
+    setLoading1(false); 
+    // Handle error (e.g., set an error state)
+  }
+};
 useEffect(() => {
 
   const fetchProfileData = async () => {
@@ -205,7 +233,7 @@ useEffect(() => {
 
   const booking = async () => {
     try {
-      setLoading(true); 
+      setLoading1(true); 
       const response = await fetch('https://halaltravel.ai/ht/api/v1/bus/booking/new', {
         method: 'POST',
         headers: {
@@ -221,16 +249,17 @@ useEffect(() => {
       const result = await response.json();
       console.log("pppp", result.busBookingReferenceNo);
       setref(result.busBookingReferenceNo)
-      setLoading(false); 
+      setLoading1(false); 
 
-     // if (ref) {
+     if (phoneNumber) {
 
         // If ref is not empty, navigate to 'bus1' with parameters
         navigation.navigate('bus1', { oname: selectedOrigin, ocode: selectedOrigincode, dname: selecteddes, dcode: selectedescode, date: formatDate(selectedDate), ref: result.busBookingReferenceNo ,date1: selectedDater ? formatDate(selectedDater) : '',email: emailAddress,callingCode:callingCode,phone:phoneNumber});
-      // } else {
-      //   // Handle the case when ref is empty, e.g., show an alert or log a message
-      //   console.log('Ref is empty. Cannot navigate.');
-      // }
+      } else {
+        fetchProfileData1()
+        // Handle the case when ref is empty, e.g., show an alert or log a message
+        
+      }
 
       // if (result.status) {
       //  setDestinationList(result);
@@ -239,7 +268,7 @@ useEffect(() => {
       //  // console.error(result.mes);
       // }
     } catch (error) {
-      setLoading(false); 
+      setLoading1(false); 
       // Handle fetch error
       console.error(error);
     }
@@ -423,7 +452,7 @@ useEffect(() => {
   };
   
   const formatDate = (date) => {
-    const day = date.getDate();
+    const day = date.getDate().toString().padStart(2, '0'); // Add padStart to ensure two digits
     const month = date.toLocaleString('default', { month: 'short' });
     const year = date.getFullYear();
   
@@ -465,6 +494,7 @@ useEffect(() => {
     style={styles.textInputi}
     placeholder="Search Origin"
     value={inputValue}
+    placeholderTextColor="#000"
     onChangeText={filterOrigins1}
   />
 </View>
@@ -507,6 +537,7 @@ useEffect(() => {
 style={styles.textInputi}
 placeholder="Search Destination"
 value={inputValue1}
+placeholderTextColor="#000"
 onChangeText={filterdestination}
 />
 </View>
@@ -695,6 +726,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   textInput: {
+    color:'#000' ,
     backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: '#55B9B9',
@@ -704,6 +736,7 @@ const styles = StyleSheet.create({
     borderRadius: 0,
   },
   textInput22: {
+    color:'#000' ,
     backgroundColor: '#fff',
     borderWidth: 0,
     borderColor: '#ccc',
@@ -714,11 +747,13 @@ const styles = StyleSheet.create({
   },
 
   textInput1: {
+    color:'#000' ,
     backgroundColor: '#fff',
     borderWidth: 0,
     borderColor: '#ccc',
     padding: 10,
     fontSize: 16,
+    
     // Add marginBottom for spacing below the text input
     borderRadius: 0,
   },
@@ -799,7 +834,7 @@ const styles = StyleSheet.create({
     padding: 10, // Add padding for better spacing
   },
   textInputi: {
-
+color:'#000' ,
     height: Platform.OS === 'android' ? 40 : undefined, // Set height to 40 for Android, undefined for iOS
     flex: Platform.OS === 'android' ? 0 : 1,
    
