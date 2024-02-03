@@ -23,6 +23,13 @@ const [token, setToken] = useState('');
   const handleLoad = () => {
     setLoading(false);
   };
+  const handleLoadStart = () => {
+    setLoading(true);
+  };
+
+  const handleLoadEnd = () => {
+    setLoading(false);
+  };
 
   const ticketData1 = [
     {
@@ -192,21 +199,42 @@ const [token, setToken] = useState('');
   `;
 
   return ShowWebView ? (
+   
+
+    <View style={styles.container}>
     <WebView
-      originWhitelist={['*']}
-      source={{ html: formHtml }}
-      javaScriptEnabled={true}
-      domStorageEnabled={true}
-      onLoad={handleLoad}
-      onError={(syntheticEvent) => console.log('WebView error: ', syntheticEvent.nativeEvent)}
-      onNavigationStateChange={handleNavigationStateChange}
+     originWhitelist={['*']}
+     source={{ html: formHtml }}
+     javaScriptEnabled={true}
+     domStorageEnabled={true}
+    // onLoad={handleLoad}
+     onLoadStart={handleLoadStart}
+     onLoadEnd={handleLoadEnd}
+     onError={(syntheticEvent) => console.log('WebView error: ', syntheticEvent.nativeEvent)}
+     onNavigationStateChange={handleNavigationStateChange}
     />
+    {loading && (
+      <View style={{ position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'rgba(255, 255, 255, 0.7)',}}>
+        <ActivityIndicator size="large" color="#000" />
+        <Text style={{  marginTop: 10,
+    fontSize: 16,
+    color: '#000',}}>Loading...</Text>
+      </View>
+    )}
+  </View>
   ) : (
     
     // Render your congratulatory message or another view here
     <View style={styles.container}>
        {isLoading1 && (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',backgroundColor:'red' }}>
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       )}

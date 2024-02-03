@@ -216,10 +216,10 @@ useEffect(() => {
       });
 
       const result = await response.json();
-      console.log("aaaaap", result,originCode);
+      console.log("aaaaap", result);
 
       // if (result.status) {
-        setDestinationList(result);
+        setDestinationList(result.data.stateList);
       //  booking();
       // } else {
       //   // Handle error response
@@ -335,7 +335,18 @@ useEffect(() => {
     setSelectedes(origin.mdTerminalNameTo)
     setInputValue1(`${origin.mdTerminalNameTo} (${origin.mdTerminalCodeTo})`)
     setShowdestinationList(false)
-   // fetchDestinationList()
+   
+
+
+  //   console.log(`Selected Terminal: ${terminal.mdTerminalNameFrom} (${terminal.mdTerminalCodeFrom})`);
+
+  //   setSelectedOrigin(terminal.mdTerminalNameFrom);
+  //   setSelectedOrigincode(terminal.mdTerminalCodeFrom);
+  //  originCode = terminal.mdTerminalCodeFrom;
+  //   setInputValue(`${terminal.mdTerminalNameFrom} (${terminal.mdTerminalCodeFrom})`)
+  //   setShowOriginList(false)
+  //  fetchDestinationList()
+
   };
 
   const renderCityItem1 = ({ item }) => (
@@ -350,6 +361,31 @@ useEffect(() => {
             <View style={styles.circle} />
             <Text style={{ color: '#4F4F4F', marginLeft: 10 }}>
               {` ${terminal.mdTerminalNameFrom} (${terminal.mdTerminalCodeFrom})`}
+            </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+      )}
+    />
+  </View>
+  
+  
+  
+  );
+
+
+  const renderCityItem12 = ({ item }) => (
+    <View >
+    <FlatList
+      data={item.terminalList}
+      keyExtractor={(terminal, index) => index.toString()}
+      renderItem={({ item: terminal, index }) => (
+        <TouchableOpacity onPress={() => handleOriginSelect11(terminal)}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={styles.cityContainer}>
+            <View style={styles.circle} />
+            <Text style={{ color: '#4F4F4F', marginLeft: 10 }}>
+              {` ${terminal.mdTerminalNameTo} (${terminal.mdTerminalCodeTo})`}
             </Text>
             </View>
           </View>
@@ -382,15 +418,33 @@ useEffect(() => {
 
 
   const filterdestination = (inputText) => {
-    setShowdestinationList(true)
-    setInputValue1(inputText);
+  //   setShowdestinationList(true)
+  //   setInputValue1(inputText);
 
-    const filteredData = destinationList.filter((item) =>
-      item.mdTerminalNameTo.toLowerCase().includes(inputText.toLowerCase())
-    );
-    const sortedData = filteredData.sort((a, b) =>
-    a.mdTerminalNameTo.toLowerCase().indexOf(inputText.toLowerCase()) -
-    b.mdTerminalNameTo.toLowerCase().indexOf(inputText.toLowerCase())
+  //   const filteredData = destinationList.filter((item) =>
+  //     item.mdTerminalNameTo.toLowerCase().includes(inputText.toLowerCase())
+  //   );
+  //   const sortedData = filteredData.sort((a, b) =>
+  //   a.mdTerminalNameTo.toLowerCase().indexOf(inputText.toLowerCase()) -
+  //   b.mdTerminalNameTo.toLowerCase().indexOf(inputText.toLowerCase())
+  // );
+  
+
+  // setFilteredOrigins1(sortedData);
+
+
+
+  setShowdestinationList(true)
+  setInputValue1(inputText);
+
+  const filteredData = destinationList.filter((item) =>
+    item.mdStateNameTo.toLowerCase().includes(inputText.toLowerCase())
+  );
+
+  // Sort the filtered data by input value
+  const sortedData = filteredData.sort((a, b) =>
+    a.mdStateNameTo.toLowerCase().indexOf(inputText.toLowerCase()) -
+    b.mdStateNameTo.toLowerCase().indexOf(inputText.toLowerCase())
   );
 
   setFilteredOrigins1(sortedData);
@@ -549,19 +603,21 @@ onChangeText={filterdestination}
   ) : (
     <FlatList
       data={filteredOrigins1}
-      keyExtractor={(item) => item.mdStateCodeFrom}
+      keyExtractor={(item) => item.mdStateCodeTo}
       renderItem={({ item }) => (
-        <View style={styles.stateContainer}>
-          <TouchableOpacity onPress={() => handleOriginSelect11(item)}>
-            {/* <Text >{item.mdTerminalNameTo}</Text> */}
-            <View style={styles.cityContainer}>
-            <View style={styles.circle} />
-            <Text style={{ color: '#4F4F4F', marginLeft: 10 }}>
-              {` ${item.mdTerminalNameTo} (${item.mdTerminalCodeTo})`}
-            </Text>
-            </View>
-          </TouchableOpacity>
-         
+
+        <View style={[styles.stateContainer, { marginBottom: 0 }]}>
+        {/* <TouchableOpacity onPress={() => handleOriginSelect1(item.mdStateNameFrom)}> */}
+
+          <View style={styles.container2}>
+      {/* <View style={styles.circle} /> */}
+      <Text style={{ color:'#4F4F4F',fontSize: 16, fontWeight: 'bold', marginLeft: 10 }}>{item.mdStateNameTo}</Text>
+    </View>         
+          <FlatList
+            data={item.cityList}
+            keyExtractor={(city) => city.mdCityCodeTo}
+            renderItem={renderCityItem12}
+          />
         </View>
       )}
     />

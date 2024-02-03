@@ -744,6 +744,7 @@ id:'ffff'
   <GooglePlacesAutocomplete
    
     placeholder="Key in your destination"
+    
     onPress={handlePlacePress}
     query={{
       key: apiKey,
@@ -771,7 +772,11 @@ id:'ffff'
     )}
     value={autocompleteValue}
     textInputValue={autocompleteValue}
-    // textInputStyle={{ minHeight: 30, height: 'auto' }} // Set the minimum height
+    textInputProps={{
+      
+      placeholderTextColor: '#202756',
+     // Set placeholder text color: ;
+    }}
   />
 
   {/* <FlatList

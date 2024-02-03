@@ -38,6 +38,8 @@ const SignInPageV2 = ({ navigation }) => {
 
   // Hide the status bar as well
   StatusBar.setHidden(true);
+//   test@gohub.com
+// pwd: Test@123
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
