@@ -83,7 +83,7 @@ const fetchProfileData1 = async () => {
   
     setLoading1(false); 
     console.log("rEDDDD",reff)
-    navigation.navigate('bus1', { oname: selectedOrigin, ocode: selectedOrigincode, dname: selecteddes, dcode: selectedescode, date: formatDate(selectedDate), ref: reff , date1: selectedDater ? formatDate(selectedDater) : '', email: data.email, callingCode: '+60', phone: data.phoneNumber});
+    navigation.navigate('bus1', { oname: selectedOrigin, ocode: selectedOrigincode, dname: selecteddes, dcode: selectedescode, date: formatDate(selectedDate), ref: reff , date1: selectedDater ? formatDate(selectedDater) : '', email: data.email, callingCode: '+60', phone: data.phoneNumber.phoneNumber});
 
   } catch (error) {
     console.error('Error fetching profile data:', error);

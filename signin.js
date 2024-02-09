@@ -106,7 +106,7 @@ const SignInPageV2 = ({ navigation }) => {
           //  token
              AsyncStorage.setItem('userId', myString);
              AsyncStorage.setItem('token', response.data.token);
-             navigation.navigate("bushistory");
+             navigation.navigate("Home");
           } catch (error) {
             console.error('Error saving user ID to AsyncStorage:', error);
           }

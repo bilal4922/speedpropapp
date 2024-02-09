@@ -26,6 +26,8 @@ const HomeScreen = ({ route }) => {
   const [page, setpage] = useState(2);
   const [bookingref, setbookingref] = useState('');
   const [loading, setLoading] = useState(false);
+  const [tripsData, setTripsData] = useState([]);
+  const [tripsPastData, setTripsPastData] = useState([]);
  // const { address } = route.params;
   //sconst { date } = route.params;
   var  token = ''
@@ -63,21 +65,56 @@ const HomeScreen = ({ route }) => {
   ];
 
 const Item = ({ item }) => (
+  <TouchableOpacity
+  style={styles.item}
+  onPress={() => navigation.navigate('busdetail', { id: item.id })}
+>
   <View style={styles.item}>
  <View style={styles.row}>
       <View style={styles.boxWhite}>
-        <Text style={styles.title}>{item.origin} - {item.destination}</Text>
+        <Text style={styles.title}>{item.terminalNameFrom} - {item.terminalNameTo}</Text>
       </View>
       <View style={styles.boxBlue}>
         <Text style={styles.price}>{item.price}</Text>
       </View>
     </View>
-    <Text style={styles.type}>{item.type}</Text>
-    <Text style={styles.date}>{item.date}</Text>
-    <Text style={styles.time}>{item.time}</Text>
-    <Text style={styles.operator}>{item.operator}</Text>
-    <Text style={styles.seats}>{item.seats} Seat(s)</Text>
+    
+    <View style={styles.row}>
+      {/* <Text style={styles.info}>{item.type}</Text> */}
+      <Text style={styles.info}>{item.departDate}</Text>
+      <Text style={styles.info}>{item.departTime}</Text>
+      {/* <Text style={styles.info}>{item.seats} Seat(s)</Text> */}
+    </View>
+    <Text style={styles.operator}>{item.operatorName}</Text>
+  
   </View>
+  </TouchableOpacity>
+);
+const Item2 = ({ item }) => (
+  <TouchableOpacity
+  style={styles.item}
+  onPress={() => navigation.navigate('busdetail', { id: item.id })}
+>
+  <View style={styles.item}>
+ <View style={styles.row}>
+      <View style={styles.boxWhite}>
+        <Text style={styles.title}>{item.terminalNameFrom} - {item.terminalNameTo}</Text>
+      </View>
+      <View style={styles.boxBlue}>
+        <Text style={styles.price}>{item.price}</Text>
+      </View>
+    </View>
+    
+    <View style={styles.row}>
+      {/* <Text style={styles.info}>{item.type}</Text> */}
+      <Text style={styles.info}>{item.departDate}</Text>
+      <Text style={styles.info}>{item.departTime}</Text>
+      {/* <Text style={styles.info}>{item.seats} Seat(s)</Text> */}
+    </View>
+    <Text style={styles.operator}>{item.operatorName}</Text>
+  
+  </View>
+  </TouchableOpacity>
 );
   useEffect(() => {
    
@@ -89,6 +126,7 @@ const Item = ({ item }) => (
           if (storedUserIdString) {
            // settoken(token1)
            token = token1
+           fetchTripsData();
           //  const storedUserId = JSON.parse(storedUserIdString);
           //  Alert.alert(`User ${storedUserId} ${token1}`);
          //   fetchData();
@@ -100,53 +138,54 @@ const Item = ({ item }) => (
         }
       };
       loadUserIdFromAsyncStorage();
-      const fetchData = async () => {
+
+      const fetchTripsData = async () => {
         try {
-          const requestBody = {
-          //  "query": address,
-            "language": "en",
-            "checkin": formatDateToCustomFormat(selectedDate),
-            "checkout": formatDateToCustomFormat1(selectedDater),
-            "currency": "MYR",
-            "adults": 2,
-            "children": []
-          };
-      
-          console.log('Request Body:', JSON.stringify(requestBody));
-      
-          const response = await fetch('https://halaltravel.ai/ht/api/v1/hotel/search/byPlaceName', {
-            method: 'POST',
+
+          const response = await fetch('https://halaltravel.ai/ht/api/v1/bus/booking/upcomingTrips', {
             headers: {
               Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json', // Add other headers if needed
+              'Content-Type': 'application/json',
               // Add any other headers required by the API
             },
-            body: JSON.stringify(requestBody),
           });
-      
-          console.log('Request URL:', 'https://halaltravel.ai/ht/api/v1/hotel/search/byPlaceName');
-          console.log('Request Method:', 'POST');
-          console.log('Request Headers:', {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json', // Add other headers if needed
-            // Add any other headers required by the API
-          });
-          console.log('Request Body:', JSON.stringify(requestBody));
-      
           if (!response.ok) {
             throw new Error(`HTTP Error: ${response.status}`);
           }
-      
-          const json = await response.json();
-          setHotelsData(json.elements);
-          setbookingref(json.searchReference);
-        } catch (error) {
-          console.error('Failed to fetch hotels:', error);
-        } finally {
+          const jsonData = await response.json();
+          setTripsData(jsonData.elements);
           setLoading(false);
-          setIsRefreshing(false);
+          fetchTripsData1();
+        } catch (error) {
+          console.error('Failed to fetch trips data:', error);
+          setLoading(false);
         }
       };
+
+      const fetchTripsData1 = async () => {
+        try {
+
+          const response = await fetch('https://halaltravel.ai/ht/api/v1/bus/booking/pastTrips', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+              // Add any other headers required by the API
+            },
+          });
+          if (!response.ok) {
+            throw new Error(`HTTP Error: ${response.status}`);
+          }
+          const jsonData = await response.json();
+          setTripsPastData(jsonData.elements);
+          setLoading(false);
+        } catch (error) {
+          console.error('Failed to fetch trips data:', error);
+          setLoading(false);
+        }
+      };
+  
+      //fetchTripsData();
+     
       
   
 
@@ -193,17 +232,26 @@ const Item = ({ item }) => (
 
       {/* Conditional rendering based on showUpcomingTrips state */}
       {showUpcomingTrips ? (
-        <View style={{flex:1,backgroundColor:'red'}}>
+        <View style={{flex:1}}>
             <FlatList
-      data={data}
+      data={tripsData}
       renderItem={({ item }) => <Item item={item} />}
-      keyExtractor={(item) => item.origin + item.destination}
+      keyExtractor={(item) => item.id.toString()}
+      ListEmptyComponent={<Text>No trips available</Text>}
+
       style={styles.list}
     />
         </View>
       ) : (
-        <View style={{flex:1,backgroundColor:'green'}}>
-          <Text>Past Trips Screen</Text>
+        <View style={{flex:1}}>
+            <FlatList
+      data={tripsPastData}
+      renderItem={({ item }) => <Item2 item={item} />}
+      keyExtractor={(item) => item.id.toString()}
+      ListEmptyComponent={<Text>No trips available</Text>}
+
+      style={styles.list}
+    />
         </View>
       )}
     </View>
@@ -224,11 +272,12 @@ const styles = StyleSheet.create({
   },
   list: {
     backgroundColor: '#fff',
+    marginn:20 ,
   },
   item: {
     
    
-   
+   margin: 20,
     borderColor: '#55B9B9',
     borderWidth:1,
     borderRadius:10
@@ -259,6 +308,8 @@ const styles = StyleSheet.create({
   },
   operator: {
     fontSize: 12,
+    padding: 14 ,
+    
   },
   seats: {
     fontSize: 12,
@@ -274,11 +325,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff', // White background
     flex: 1.4, // Equal width with other box
     padding: 10, // Add padding for spacing
+    borderTopLeftRadius: 10,
   },
   boxBlue: {
     backgroundColor: '#55B9B9', // Blue background
     flex: 0.6, // Equal width with other box
     padding: 10, // Add padding for spacing
+    borderTopRightRadius: 10,
+  },
+  row1: {
+    flexDirection: 'row', // Arrange elements horizontally
+    alignItems: 'center', // Vertically center elements
+    justifyContent: 'space-between', // Distribute elements with space between
+  },
+  info: {
+    // ... your styles for type, date, time, seats
+    flex: 1, // Make each Text element flexible and share available space
+    marginHorizontal: 4, 
+    padding:10// Add some horizontal spacing if desired
   },
 });
 

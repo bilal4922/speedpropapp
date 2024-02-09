@@ -21,6 +21,7 @@ import ProfileScreen from './ProfileScreen';
   import MyPlanScreen from './MyPlanScreen';
 
   import bushistory from './bushistory';
+  import busdetail from './busdetail';
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -43,6 +44,9 @@ const App = () => {
         <Stack.Screen name="signup" component={signup} />
         
         <Stack.Screen name="bushistory" component={bushistory} />
+        <Stack.Screen name="busdetail" component={busdetail} />
+        
+        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
