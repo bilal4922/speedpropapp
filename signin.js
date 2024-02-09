@@ -38,10 +38,10 @@ const SignInPageV2 = ({ navigation }) => {
 
   // Hide the status bar as well
   StatusBar.setHidden(true);
-//   test@gohub.com
+//   test@gohub.coms
 // pwd: Test@123
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [email, setEmail] = React.useState("test@gohub.com");
+  const [password, setPassword] = React.useState("Test@123");
   const [isLoading, setIsLoading] = React.useState(false);
 
 
@@ -100,12 +100,13 @@ const SignInPageV2 = ({ navigation }) => {
         // Check the response for success (adjust as per your API response structure)
         if (response.data.userId !== undefined) {
           // userId exists in the response data
-          console.log("User ID:", response.data.token);
+          console.log("User ID:", response.data.userId);
           try {
+            const myString = response.data.userId.toString();
           //  token
-             AsyncStorage.setItem('userId', JSON.stringify(response.data.userId));
+             AsyncStorage.setItem('userId', myString);
              AsyncStorage.setItem('token', response.data.token);
-             navigation.navigate("Home");
+             navigation.navigate("bushistory");
           } catch (error) {
             console.error('Error saving user ID to AsyncStorage:', error);
           }
@@ -119,7 +120,7 @@ const SignInPageV2 = ({ navigation }) => {
       })
       .catch((error) => {
         setIsLoading(false);
-        
+        Alert.alert("Error", "Invalid email or password.");
         // Handle API request error
         console.error("API Error:", error);
       //  Alert.alert("Error", "An error occurred while signing in.",error);
@@ -282,89 +283,9 @@ const SignInPageV2 = ({ navigation }) => {
           </View>
         </View>
         <View style={[styles.signInPageV2, styles.frameFlexBox2]}>
-        {/* ... other components */}
         
-        {/* Facebook Login Button */}
        <View>
-       <TouchableOpacity
-  onPress={handleGoogleLogin}
-
- style={[
-      styles.emailWrapperg,
-      styles.emailWrapperShadowBox,
-      {
-        backgroundColor: Color.colorMidnightblue_100,
-        borderRadius: Border.br_3xs,
-        width: "90%",
-        marginTop: 10,
-        marginLeft: 20,
-        alignItems: "center",
-        justifyContent: "center",
-      },
-    
-  ]}
->
-
-    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-      <Icon name="facebook" size={24} color="#FFFFFF" />
-      <Text
-        style={[
-          styles.email,
-          styles.emailTypo,
-          {
-            color: "#FFFFFF",
-            textAlign: "center",
-            fontWeight: 'bold',
-            marginLeft: 10, // Adjust the spacing between the icon and text
-          },
-        ]}
-      >
-        Sign in with Facebook
-      </Text>
-    </View>
-  
-</TouchableOpacity>
-       <TouchableOpacity
-  onPress={signIn}
-
- style={[
-      styles.emailWrapperg,
-      styles.emailWrapperShadowBox,
-      {
-        backgroundColor: '#fff',
-        borderRadius: Border.br_3xs,
-        width: "90%",
-        marginTop: 10,
-        marginLeft: 20,
-        alignItems: "center",
-        justifyContent: "center",
-      },
-    
-  ]}
->
-  {isLoading ? (
-    <ActivityIndicator color="#FFFFFF" />
-  ) : (
-    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-      <Icon name="google" size={24} color="#192579" />
-      <Text
-        style={[
-          styles.email,
-          styles.emailTypo,
-          {
-            color: "gray",
-            textAlign: "center",
-            fontWeight: 'bold',
-            marginLeft: 10, // Adjust the spacing between the icon and text
-          },
-        ]}
-      >
-        Sign in with Google
-      </Text>
-    </View>
-  )}
-</TouchableOpacity>
-
+     
         
       
        </View>

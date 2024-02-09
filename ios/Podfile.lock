@@ -523,12 +523,13 @@ PODS:
     - React-Core
   - RNDeviceInfo (10.11.0):
     - React-Core
-  - RNGestureHandler (2.13.1):
+  - RNGestureHandler (2.15.0):
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - RNGoogleSignin (10.0.1):
     - GoogleSignIn (~> 7.0)
     - React-Core
-  - RNReanimated (3.5.4):
+  - RNReanimated (3.5.1):
     - DoubleConversion
     - FBLazyVector
     - glog
@@ -857,9 +858,9 @@ SPEC CHECKSUMS:
   RNCPicker: 529d564911e93598cc399b56cc0769ce3675f8c8
   RNDateTimePicker: ccd988deb223cbb2e669e157ec576c2c6217128c
   RNDeviceInfo: bf8a32acbcb875f568217285d1793b0e8588c974
-  RNGestureHandler: 38aa38413896620338948fbb5c90579a7b1c3fde
+  RNGestureHandler: 7909c50383a18f0cb10ce1db7262b9a6da504c03
   RNGoogleSignin: ccaa4a81582cf713eea562c5dd9dc1961a715fd0
-  RNReanimated: ab2e96c6d5591c3dfbb38a464f54c8d17fb34a87
+  RNReanimated: 99aa8c96151abbc2d7e737a56ec62aca709f0c92
   RNScreens: 85d3880b52d34db7b8eeebe2f1a0e807c05e69fa
   RNSVG: ba3e7232f45e34b7b47e74472386cf4e1a676d0a
   RNVectorIcons: 8b5bb0fa61d54cd2020af4f24a51841ce365c7e9

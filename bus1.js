@@ -19,6 +19,8 @@ const MyWebView = ({ route, navigation }) => {
 const [ShowWebView, setShowWebView] = useState(true);
 const [ticketData, setTicketData] = useState([]);
 const [token, setToken] = useState('');
+const [salesTransactionNoCounter, setSalesTransactionNoCounter] = useState(0);
+
 
   const handleLoad = () => {
     setLoading(false);
@@ -48,7 +50,7 @@ const [token, setToken] = useState('');
 
       if (storedToken) {
         setToken(storedToken);
-      //  fetchData1();
+       // fetchData1();
       } else {
         // Handle the case where the token is not available
         console.error('Token not found in AsyncStorage');
@@ -75,7 +77,7 @@ const [token, setToken] = useState('');
     });
   }, [navigation,token]);
 
-  let salesTransactionNoCounter = 0;
+
 
   const handleNavigationStateChange = (navState) => {
       const urlParams = parseUrlParams(navState.url);
@@ -89,20 +91,20 @@ const [token, setToken] = useState('');
           // Perform further processing based on the presence of "BookingNo"
       }
   
-      // Check for SalesTransactionNo
       if ('SalesTransactionNo' in urlParams) {
-          const salesTransactionNo = urlParams.SalesTransactionNo;
-          console.log('SalesTransactionNo:', salesTransactionNo);
-  
-          // Increment counter when SalesTransactionNo appears
-          salesTransactionNoCounter++;
-  
-          if (salesTransactionNoCounter === 4) {
-              console.log('SalesTransactionNo has appeared four times. Sky!',);
-              setShowWebView(false);
-              setbookingNo(salesTransactionNo);
-              fetchData1();
-          }
+        const salesTransactionNo = urlParams.SalesTransactionNo;
+        console.log('SalesTransactionNo:', salesTransactionNo);
+    
+        // Increment counter when SalesTransactionNo appears
+        setSalesTransactionNoCounter((prevCounter) => prevCounter + 1);
+    
+        if (salesTransactionNoCounter === 3) { // Updated to 3, as it increments first
+        //  Alert.alert("idddd", salesTransactionNo);
+          console.log('SalesTransactionNo has appeared four times. Sky!');
+          setShowWebView(false);
+          setbookingNo(salesTransactionNo);
+          fetchData1();
+        }
       }
   };
   
@@ -234,85 +236,13 @@ const [token, setToken] = useState('');
     // Render your congratulatory message or another view here
     <View style={styles.container}>
        {isLoading1 && (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',backgroundColor:'red' }}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       )}
 
       {!isLoading1 && (
-//      <FlatList
-//       data={ticketData1}
-//       renderItem={({ item }) => (
-//         <View style={{ flex: 1, flexDirection: 'row' ,padding:10,borderColor:'#ccc',borderWidth:1,borderRadius:4,height:220,margin:20}}>
-//           <View style={{ flex: 0.7, }}>
-//           <View style={{ flexDirection: 'row',  }}>
-     
-//       <Text style={styles.label}>Melaka Sentral</Text>
-//         <Icon name="arrow-right" size={10} color="#000" />
-//        <Text style={styles.label}>Melaka Sentral</Text>
-//     </View>
-//     <Text style={styles.label}>daate</Text>
-//     <View style={{ flexDirection: 'row',  }}>
-     
-//      <Text style={styles.label1}>Operator Ticket Ref No.</Text>
-       
-//       <Text style={styles.label2}>Melaka Sentral</Text>
-//    </View>
-//    <View style={{ flexDirection: 'row',  }}>
-     
-//      <Text style={styles.label1}>Booking No.</Text>
-       
-//       <Text style={styles.label2}>Melaka Sentral</Text>
-//    </View>
-//    <View style={{ flexDirection: 'row',marginTop:20  }}>
 
-//    <Icon 
-          
-         
-//           name="directions-bus" color="#55B9B9" size={20} style={styles.icon} />
-     
-//      <Text style={styles.label1}>Trip Detail</Text>
-       
-      
-//    </View>
-//    <View style={{ flexDirection: 'row', marginTop: 20 }}>
- 
-//   <Image
-//     source={{ uri: 'https://goticketing.blob.core.windows.net/operatorcompany/a1b2adba-8043-4650-8e6d-95566c90d68e.png' }}
-//     style={{ width: 20, height: 20, marginLeft: 10 }}
-//   />
-//     <Text style={styles.label1}>Delima Vision</Text>
-// </View>
-// <View style={{ flexDirection: 'row', marginTop: 20 }}>
- 
-  
-//    <Text style={styles.label2}>SEAT NO.</Text>
-//    <Text style={styles.label1}>11</Text>
-// </View>
-//           </View>
-//           <View style={{ flex: 0.3, justifyContent: 'center', alignItems: 'center' }}>
-
-//           <Image
-//         source={require('./assets/qr.jpg')}
-//         style={{ width: 80, height: 80 }}
-//       />
-//   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-    
-//     <View style={{ marginLeft: 10 }}>
-     
-//     </View>
-//     <View style={{ marginLeft: 10 }}>
-//       <Text style={styles.label1}>Trip No</Text>
-//       <Text style={styles.label1}>passengerIdentityName</Text>
-//       <Text style={styles.label1}>passengerIdentityNo</Text>
-//     </View>
-//   </View>
-// </View>
-
-//         </View>
-//       )}
-//       keyExtractor={(item) => item.label}
-//     />
 <FlatList
 data={ticketData.trips}
 renderItem={({ item }) => (

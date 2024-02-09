@@ -57,78 +57,72 @@ const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 const [isDatePickerVisible1, setDatePickerVisibility1] = useState(false);
 const [isDatePickerVisible2, setDatePickerVisibility2] = useState(false);
 const [token, setToken] = useState('');
+var reff = ''
 
 const [id, setid] = useState('');
 
 
 const [emailAddress, setEmailAddress] = useState('');
 const [gender, setGender] = useState('');
-const [callingCode, setCallingCode] = useState('');
+//const [callingCode, setCallingCode] = useState('');
 const [phoneNumber, setPhoneNumber] = useState('');
 
  
 const fetchProfileData1 = async () => {
   try {
+   
+
     setLoading1(true); 
     console.log("Fetching profile data for user ID:", id);
 
-    const response = await fetch(`https://halaltravel.ai/ht/api/profile/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json', // Add other headers if needed
-      },
-    });
+    const response = await fetch(`https://halaltravel.ai/ht/api/profile/${id}`);
 
     console.log("Response status:", response.status);
 
     const data = await response.json();
-    console.log("Fetched data:", data.email,data.countryCallingCode,data.phoneNumber);
-
-    const email = data.email;
-    const userCallingCode = data.countryCallingCode;
-    const mobileNumber = data.phoneNumber;
+  
     setLoading1(false); 
-    navigation.navigate('bus1', { oname: selectedOrigin, ocode: selectedOrigincode, dname: selecteddes, dcode: selectedescode, date: formatDate(selectedDate), ref: result.busBookingReferenceNo ,date1: selectedDater ? formatDate(selectedDater) : '',email: data.email,callingCode:'+60',phone:data.phoneNumber});
+    console.log("rEDDDD",reff)
+    navigation.navigate('bus1', { oname: selectedOrigin, ocode: selectedOrigincode, dname: selecteddes, dcode: selectedescode, date: formatDate(selectedDate), ref: reff , date1: selectedDater ? formatDate(selectedDater) : '', email: data.email, callingCode: '+60', phone: data.phoneNumber});
 
   } catch (error) {
     console.error('Error fetching profile data:', error);
+  
+
     setLoading1(false); 
-    // Handle error (e.g., set an error state)
+    
   }
 };
+
 useEffect(() => {
 
-  const fetchProfileData = async () => {
-    try {
-      console.log("Fetching profile data for user ID:", id);
+  // const fetchProfileData = async () => {
+  //   try {
+    
+
+  //     console.log("Fetching profile data for user IDD:", id);
   
-      const response = await fetch(`https://halaltravel.ai/ht/api/profile/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json', // Add other headers if needed
-        },
-      });
+  //     const response = await fetch(`https://halaltravel.ai/ht/api/profile/${id}`)
   
-      console.log("Response status:", response.status);
+  //     console.log("Response status:", response.status);
   
-      const data = await response.json();
-      console.log("Fetched data:", data.email,data.countryCallingCode,data.phoneNumber);
+  //     const data = await response.json();
   
-      const email = data.email;
-      const userCallingCode = data.countryCallingCode;
-      const mobileNumber = data.phoneNumber;
+  //     const email = data.email;
+     
+  //     const mobileNumber = data.phoneNumber;
   
-      setEmailAddress(email);
-      setCallingCode(userCallingCode);
-      setPhoneNumber(mobileNumber);
-    } catch (error) {
-      console.error('Error fetching profile data:', error);
-      // Handle error (e.g., set an error state)
-    }
-  };
+  //     setEmailAddress(email);
+     
+  //     setPhoneNumber(mobileNumber);
+  //   } catch (error) {
+  //     console.error('Error fetching profile data:', error);
+    
+  //   }
+  // };
   
 
-  // Call the fetchProfileData function when the component mounts
+  
   
  
   const fetchData = async () => {
@@ -176,7 +170,7 @@ useEffect(() => {
         const data = await response.json();
         console.log("Responsess", data.data.stateList)
         setOriginList(data.data.stateList);
-        fetchProfileData();
+      //  fetchProfileData();
       } else {
         // Handle API error response
         console.error('API Error:', response, response.statusText);
@@ -249,17 +243,18 @@ useEffect(() => {
       const result = await response.json();
       console.log("pppp", result.busBookingReferenceNo);
       setref(result.busBookingReferenceNo)
+      reff = result.busBookingReferenceNo
       setLoading1(false); 
 
-     if (phoneNumber) {
+    //  if (phoneNumber) {
 
-        // If ref is not empty, navigate to 'bus1' with parameters
-        navigation.navigate('bus1', { oname: selectedOrigin, ocode: selectedOrigincode, dname: selecteddes, dcode: selectedescode, date: formatDate(selectedDate), ref: result.busBookingReferenceNo ,date1: selectedDater ? formatDate(selectedDater) : '',email: emailAddress,callingCode:callingCode,phone:phoneNumber});
-      } else {
+    //     // If ref is not empty, navigate to 'bus1' with parameters
+    //     navigation.navigate('bus1', { oname: selectedOrigin, ocode: selectedOrigincode, dname: selecteddes, dcode: selectedescode, date: formatDate(selectedDate), ref: result.busBookingReferenceNo ,date1: selectedDater ? formatDate(selectedDater) : '',email: emailAddress,callingCode: '+60',phone:phoneNumber});
+    //   } else {
         fetchProfileData1()
         // Handle the case when ref is empty, e.g., show an alert or log a message
         
-      }
+    //  }
 
       // if (result.status) {
       //  setDestinationList(result);
@@ -418,54 +413,95 @@ useEffect(() => {
 
 
   const filterdestination = (inputText) => {
-  //   setShowdestinationList(true)
-  //   setInputValue1(inputText);
-
-  //   const filteredData = destinationList.filter((item) =>
-  //     item.mdTerminalNameTo.toLowerCase().includes(inputText.toLowerCase())
-  //   );
-  //   const sortedData = filteredData.sort((a, b) =>
-  //   a.mdTerminalNameTo.toLowerCase().indexOf(inputText.toLowerCase()) -
-  //   b.mdTerminalNameTo.toLowerCase().indexOf(inputText.toLowerCase())
-  // );
-  
-
-  // setFilteredOrigins1(sortedData);
+ 
 
 
 
   setShowdestinationList(true)
   setInputValue1(inputText);
 
-  const filteredData = destinationList.filter((item) =>
-    item.mdStateNameTo.toLowerCase().includes(inputText.toLowerCase())
-  );
+  // const filteredData = destinationList.filter((item) =>
+  //   item.mdStateNameTo.toLowerCase().includes(inputText.toLowerCase())
+  // );
 
-  // Sort the filtered data by input value
-  const sortedData = filteredData.sort((a, b) =>
-    a.mdStateNameTo.toLowerCase().indexOf(inputText.toLowerCase()) -
-    b.mdStateNameTo.toLowerCase().indexOf(inputText.toLowerCase())
-  );
+  // // Sort the filtered data by input value
+  // const sortedData = filteredData.sort((a, b) =>
+  //   a.mdStateNameTo.toLowerCase().indexOf(inputText.toLowerCase()) -
+  //   b.mdStateNameTo.toLowerCase().indexOf(inputText.toLowerCase())
+  // );
+
+  // setFilteredOrigins1(sortedData);
+
+
+  const sanitizedInput = inputText.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  const filteredData = destinationList.filter((item) => {
+    const sanitizedStateName = item.mdStateNameTo.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const stateNameMatch = sanitizedStateName.includes(sanitizedInput);
+
+    const terminalMatch = item.cityList.some((city) =>
+      city.terminalList.some((terminal) => {
+        const terminalString = `${terminal.mdTerminalNameTo} (${terminal.mdTerminalCodeTo})`;
+        const sanitizedTerminalString = terminalString.toLowerCase().replace(/[^a-z0-9]/g, '');
+        return sanitizedTerminalString.includes(sanitizedInput);
+      })
+    );
+
+    // Include the item in the filtered data if either stateName or terminalName matches
+    return stateNameMatch || terminalMatch;
+  });
+
+  // Sort the filtered data based on state name and terminal name
+  const sortedData = filteredData.sort((a, b) => {
+    const aString = `${a.mdStateNameTo} ${a.cityList.map(c => c.terminalList.map(t => `${t.mdTerminalNameTo} (${t.mdTerminalCodeTo})`).join(' ')).join(' ')}`;
+    const bString = `${b.mdStateNameTo} ${b.cityList.map(c => c.terminalList.map(t => `${t.mdTerminalNameTo} (${t.mdTerminalCodeTo})`).join(' ')).join(' ')}`;
+    return aString.toLowerCase().localeCompare(bString.toLowerCase());
+  });
 
   setFilteredOrigins1(sortedData);
+
 };
 
-  const filterOrigins1 = (inputText) => {
-    setShowOriginList(true)
-    setInputValue(inputText);
 
-    const filteredData = originList.filter((item) =>
-      item.mdStateNameFrom.toLowerCase().includes(inputText.toLowerCase())
+const filterOrigins1 = (inputText) => {
+  setShowOriginList(true);
+  setInputValue(inputText);
+
+  const sanitizedInput = inputText.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  const filteredData = originList.filter((item) => {
+    const sanitizedStateName = item.mdStateNameFrom.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const stateNameMatch = sanitizedStateName.includes(sanitizedInput);
+
+    const terminalMatch = item.cityList.some((city) =>
+      city.terminalList.some((terminal) => {
+        const terminalString = `${terminal.mdTerminalNameFrom} (${terminal.mdTerminalCodeFrom})`;
+        const sanitizedTerminalString = terminalString.toLowerCase().replace(/[^a-z0-9]/g, '');
+        return sanitizedTerminalString.includes(sanitizedInput);
+      })
     );
 
-    // Sort the filtered data by input value
-    const sortedData = filteredData.sort((a, b) =>
-      a.mdStateNameFrom.toLowerCase().indexOf(inputText.toLowerCase()) -
-      b.mdStateNameFrom.toLowerCase().indexOf(inputText.toLowerCase())
-    );
+    // Include the item in the filtered data if either stateName or terminalName matches
+    return stateNameMatch || terminalMatch;
+  });
 
-    setFilteredOrigins(sortedData);
-  };
+  // Sort the filtered data based on state name and terminal name
+  const sortedData = filteredData.sort((a, b) => {
+    const aString = `${a.mdStateNameFrom} ${a.cityList.map(c => c.terminalList.map(t => `${t.mdTerminalNameFrom} (${t.mdTerminalCodeFrom})`).join(' ')).join(' ')}`;
+    const bString = `${b.mdStateNameFrom} ${b.cityList.map(c => c.terminalList.map(t => `${t.mdTerminalNameFrom} (${t.mdTerminalCodeFrom})`).join(' ')).join(' ')}`;
+    return aString.toLowerCase().localeCompare(bString.toLowerCase());
+  });
+
+  setFilteredOrigins(sortedData);
+};
+
+
+
+
+
+
+
+
 
   const showDatePicker = () => {
   setDatePickerVisibility1(true);
