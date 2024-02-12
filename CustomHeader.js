@@ -1,15 +1,24 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const CustomHeader = () => {
+  const navigation = useNavigation();
+
+  const openMenu = () => {
+    navigation.openDrawer(); // This function will open the drawer
+  };
+
   return (
     <View style={styles.headerContainer}>
       {/* Left: Custom Menu Icon */}
       {/* Replace 'Menu.png' with your menu icon source */}
-      <Image
-        source={require('./assets/Menu.png')} 
-        style={styles.icon}
-      />
+      <TouchableOpacity onPress={openMenu}>
+        <Image
+          source={require('./assets/Menu.png')} 
+          style={styles.icon}
+        />
+      </TouchableOpacity>
 
       {/* Center: App Logo */}
       {/* Replace 'visitmalaysia.png' with your app logo source */}

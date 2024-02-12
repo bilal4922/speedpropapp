@@ -416,7 +416,9 @@ const [selectedDate, setSelectedDate] = useState(new Date(date));
             {hotelData.meal === 'nomeal' ? 'Breakfast not included' : 'Breakfast included'}
           </Text>
         </View>
-        <Text style={styles.price}>{`${hotelData.showCurrencyCode} ${hotelData.showAmount.toFixed(2)}`}</Text>
+        <Text style={styles.price}>
+  {hotelData.showAmount !== null ? `${hotelData.showCurrencyCode} ${hotelData.showAmount.toFixed(2)}` : `${hotelData.showCurrencyCode} 0.00`}
+</Text>
       </View>
     </View>
   </View>

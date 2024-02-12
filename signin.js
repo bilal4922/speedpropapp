@@ -19,10 +19,10 @@ import {
   FontFamily,
 } from "./GlobalStylessignin";
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {
-  GoogleSignin,
-  statusCodes,
-} from '@react-native-google-signin/google-signin';
+// import {
+//   GoogleSignin,
+//   statusCodes,
+// } from '@react-native-google-signin/google-signin';
 import { StatusBar } from 'react-native'; // Import StatusBar
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -128,41 +128,41 @@ const SignInPageV2 = ({ navigation }) => {
   };
 
 
-  GoogleSignin.configure({
-    // Your OAuth 2.0 client ID
-    iosClientId: '467967159674-38rnssv0nmqtsf7g8h5g9ok1thdn9pr9.apps.googleusercontent.com',
-  });
+  // GoogleSignin.configure({
+  //   // Your OAuth 2.0 client ID
+  //   iosClientId: '467967159674-38rnssv0nmqtsf7g8h5g9ok1thdn9pr9.apps.googleusercontent.com',
+  // });
 
 
 
-  const signIn = async () => {
-    try {
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      console.log('User Info:', userInfo);
+  // const signIn = async () => {
+  //   try {
+  //     await GoogleSignin.hasPlayServices();
+  //     const userInfo = await GoogleSignin.signIn();
+  //     console.log('User Info:', userInfo);
   
-      // Extract email, name, token, and ID from userInfo
-      const { email, name, idToken, serverAuthCode } = userInfo.user;
-      console.log('Email:', email);
-      console.log('Name:', name);
-      console.log('ID Token:', idToken);
-      console.log('Server Auth Code:', serverAuthCode);
-    } catch (error) {
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        // User cancelled the sign-in process
-        console.log('Sign-In Cancelled');
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-        // Sign-in is in progress already
-        console.log('Sign-In in Progress');
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        // Play Services are not available
-        console.log('Play Services Not Available');
-      } else {
-        // Some other error occurred
-        console.error('Error:', error.message);
-      }
-    }
-  }
+  //     // Extract email, name, token, and ID from userInfo
+  //     const { email, name, idToken, serverAuthCode } = userInfo.user;
+  //     console.log('Email:', email);
+  //     console.log('Name:', name);
+  //     console.log('ID Token:', idToken);
+  //     console.log('Server Auth Code:', serverAuthCode);
+  //   } catch (error) {
+  //     if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+  //       // User cancelled the sign-in process
+  //       console.log('Sign-In Cancelled');
+  //     } else if (error.code === statusCodes.IN_PROGRESS) {
+  //       // Sign-in is in progress already
+  //       console.log('Sign-In in Progress');
+  //     } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+  //       // Play Services are not available
+  //       console.log('Play Services Not Available');
+  //     } else {
+  //       // Some other error occurred
+  //       console.error('Error:', error.message);
+  //     }
+  //   }
+  // }
   
 
   // Use navigation.setOptions to hide the header
